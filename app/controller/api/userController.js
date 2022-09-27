@@ -1,37 +1,37 @@
 const jwt = require("jsonwebtoken");
-const { Client } = require("pg");
 require("dotenv").config();
-const client = require("../../config/db");
+const { Client } = require("pg");
+const client = new Client()
 
 
-// async function getAllUser() {
-//   await client.connect()
-//   const res = await client.query("SELECT * FROM 'user';" )
-//   console.log(res.rows[0].message);
+async function getAllUser() {
+  await client.connect()
+  const res = await client.query('SELECT * FROM "user"')
+  console.log(res.rows[0]);
   
-//   await client.end()
-// }
+  //await client.end()
+}
 
-// getAllUser()
+getAllUser()
 
 
-const userController = {
-   login(req, res) {
+// const userController = {
+//    login(req, res) {
 
-  //   await client.connect();
+//   //   await client.connect();
 
-    function generateAccessToken(user) {
-      return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1800s",
-      });
-    }
+//     function generateAccessToken(user) {
+//       return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+//         expiresIn: "1800s",
+//       });
+//     }
 
-    const user = {
-        id: 42,
-        name: 'Jean Bon',
-        email: 'jeanbon@gmail.com',
-        admin: true,
-    };
+//     const user = {
+//         id: 42,
+//         name: 'Jean Bon',
+//         email: 'jeanbon@gmail.com',
+//         admin: true,
+//     };
     // TODO: fetch le user depuis la db basé sur l'email passé en paramètre
     // const { email, password } = req.body;
 
@@ -60,20 +60,20 @@ const userController = {
     //   console.error(err.message);
     //   res.status(500).send("Server error");
     // }
-    if (req.body.email !== 'jeanbon@gmail.com') {
-        res.status(401).send('invalid credentials');
-        return ;
-    }
-    if (req.body.password !== 'cuillere') {
-        res.status(401).send('invalid credentials');
-        return ;
-    }
+//     if (req.body.email !== 'jeanbon@gmail.com') {
+//         res.status(401).send('invalid credentials');
+//         return ;
+//     }
+//     if (req.body.password !== 'cuillere') {
+//         res.status(401).send('invalid credentials');
+//         return ;
+//     }
 
-    const accessToken = generateAccessToken(user);
-    res.send({
-      accessToken,
-    });
-  },
-};
+//     const accessToken = generateAccessToken(user);
+//     res.send({
+//       accessToken,
+//     });
+//   },
+// };
 
-module.exports = userController;
+//module.exports = userController;

@@ -1,14 +1,18 @@
-const { Client } = require("pg");
+require("dotenv").config();
+const { Client } = require('pg')
+const client = new Client( 
+  {
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT,
+  } 
+)
+console.log(client.user)
 
-const client = new Client({
-    host: 'localhost',
-    port: 5432,
-    password: 'transmission',
-    database: 'transmission'
-});
+//await client.connect()
+//const res = await client.query('SELECT NOW()')
 
 
-
-
-
-module.exports = client;
+module.exports = client; 

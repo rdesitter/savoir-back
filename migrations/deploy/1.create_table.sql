@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS "user"(
     pseudo TEXT NOT NULL UNIQUE,
     email mail NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    birthdate INT NOT NULL,
+    birthdate TEXT NOT NULL,
     pronoun TEXT,
     firstname TEXT,
     lastname TEXT,

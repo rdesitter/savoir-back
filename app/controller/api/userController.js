@@ -1,30 +1,32 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt')
 require("dotenv").config();
 const { Client } = require("pg");
-const client = new Client()
+const client = require("../../config/db")
 
 
-async function getAllUser() {
-  await client.connect()
-  const res = await client.query('SELECT * FROM "user"')
-  console.log(res.rows[0]);
+// async function getAllUser() {
+//   await client.connect()
+//   const res = await client.query('SELECT * FROM "user"')
   
-  //await client.end()
-}
+//   console.log(res.rows[0]);
+  
+//   //await client.end()
+// }
 
-getAllUser()
+// getAllUser()
 
 
-// const userController = {
-//    login(req, res) {
+ const userController = {
+    async login(req, res) {
 
-//   //   await client.connect();
+ await client.connect();
 
-//     function generateAccessToken(user) {
-//       return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-//         expiresIn: "1800s",
-//       });
-//     }
+    function generateAccessToken(user) {
+      return jwt.sign({user}, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1800s",
+      });
+    }
 
 //     const user = {
 //         id: 42,
@@ -33,27 +35,24 @@ getAllUser()
 //         admin: true,
 //     };
     // TODO: fetch le user depuis la db basé sur l'email passé en paramètre
-    // const { email, password } = req.body;
-
-    // try {
-    //   const user = await client.query("SELECT * FROM user WHERE email = $1", [
-    //     email,
-    //   ]);
-    //   console.log(user)
-
-    //   if (user.rows.length === 0) {
-    //     return res.status(401).json("Invalid Credential");
-    //   }
+     
+     //try {
+      const {email, password} = req.body;
+      console.log(email, password)
+      const user = await client.query('SELECT * FROM "user" WHERE email = $1', [email]);
+      //console.log(user);
+      if (user.rows.length === 0) return res.status(401).json({error:"Email is incorrect"})
+      
       // TODO: check que le mot de passe du user est correct
 
-    //   const validPassword = await bcrypt.compare(
-    //     password,
-    //     user.rows[0].password
-    //   );
-
-    //   if (!validPassword) {
-    //     return res.status(401).json("Invalid Credential");
-    //   }
+      const validPassword = await bcrypt.compare(
+        password,
+        user.rows[0].password
+      );
+        console.log("######",validPassword)
+      if (!validPassword) {
+        return res.status(401).json("Incorrect password");
+      }
     //   const jwtToken = jwtGenerator(user.rows[0].id);
     //   return res.json({ jwtToken });
     // } catch (err) {
@@ -69,11 +68,12 @@ getAllUser()
 //         return ;
 //     }
 
-//     const accessToken = generateAccessToken(user);
-//     res.send({
-//       accessToken,
-//     });
-//   },
-// };
+     const accessToken = generateAccessToken(user);
+     console.log(accessToken)
+    res.send({
+      accessToken,
+    });
+   },
+ };
 
-//module.exports = userController;
+module.exports = userController;

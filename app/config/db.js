@@ -9,7 +9,7 @@ const client = new Client(
     port: process.env.PGPORT,
   } 
 )
-console.log(client.user)
+//console.log(client)
 
 //await client.connect()
 //const res = await client.query('SELECT NOW()')

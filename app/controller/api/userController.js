@@ -38,10 +38,8 @@ const userController = {
         tokens
       });
     } catch (err) {
-      res.status(500).json({
-             message: err,
-             text: "login"
-    });
+      console.log(err)
+      res.status(500).json(err);
     }
   },
 

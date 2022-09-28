@@ -10,6 +10,7 @@ const userController = {
     //fetch le user depuis la db basé sur l'email passé en paramètre
     
     try {
+      console.log("#########usercontroller",client )
       await client.connect();
       const { email, password } = req.body;
       const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
@@ -38,7 +39,8 @@ const userController = {
       });
     } catch (err) {
       res.status(500).json({
-             message: "crise de nerf",
+             message: err,
+             text: "login"
     });
     }
   },
@@ -47,6 +49,7 @@ const userController = {
 
   async register(req, res) {
     try{
+      console.log("####### register",client)
       await client.connect();
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = await client.query(

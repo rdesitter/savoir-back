@@ -56,6 +56,11 @@ const userController = {
     );
     res.json(jwtTokens(newUser.rows[0]));
   },
+
+
+  message(req,res){
+    res.send("Hello World")
+  }
 };
 
 module.exports = userController;

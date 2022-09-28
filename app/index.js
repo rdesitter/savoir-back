@@ -6,7 +6,7 @@ const app = express();
 /** ********* */
 /*  EXPRESS */
 /** ******** */
-const corsOptions = {credentials:true, origin: process.env.URL || '*'};
+const corsOptions = {credentials:true, origin: '*'};
 const routerIndex = require("./router");
 
 app.use(express.urlencoded({ extended: true }));

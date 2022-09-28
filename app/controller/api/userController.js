@@ -38,7 +38,7 @@ const userController = {
       });
     } catch (err) {
       res.status(500).json({
-             message: err,
+             message: "crise de nerf",
     });
     }
   },

@@ -51,7 +51,7 @@ const userController = {
         hashedPassword,
         req.body.pseudo,
         req.body.birthdate,
-        req.body.role_id,
+        req.body.role_id, /* by default */
       ]
     );
     res.json(jwtTokens(newUser.rows[0]));

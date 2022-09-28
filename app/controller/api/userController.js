@@ -46,19 +46,25 @@ const userController = {
 
 
   async register(req, res) {
-    await client.connect();
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const newUser = await client.query(
-      'INSERT INTO "user" (email,password, pseudo ,birthdate, role_id) VALUES ($1,$2,$3,$4,$5) RETURNING *',
-      [
-        req.body.email,
-        hashedPassword,
-        req.body.pseudo,
-        req.body.birthdate,
-        req.body.role_id, /* by default */
-      ]
-    );
-    res.json(jwtTokens(newUser.rows[0]));
+    try{
+      await client.connect();
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const newUser = await client.query(
+        'INSERT INTO "user" (email,password, pseudo ,birthdate, role_id) VALUES ($1,$2,$3,$4,$5) RETURNING *',
+        [
+          req.body.email,
+          hashedPassword,
+          req.body.pseudo,
+          req.body.birthdate,
+          req.body.role_id, /* by default */
+        ]
+      );
+      res.json(jwtTokens(newUser.rows[0]));
+    }catch (err) {
+      res.status(500).json({
+             message: err,
+    });
+    }
   },
 
 

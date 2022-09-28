@@ -62,9 +62,8 @@ const userController = {
       );
       res.json(jwtTokens(newUser.rows[0]));
     }catch (err) {
-      res.status(500).json({
-             message: err,
-    });
+      console.trace(err)
+      res.status(500).render(err.toString());
     }
   },
 

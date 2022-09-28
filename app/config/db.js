@@ -12,7 +12,7 @@ const client = new Client(
 )
 //console.log(client)
 
-//await client.connect()
-//const res = await client.query('SELECT NOW()')
+client.connect()
+
 
 module.exports = client; 

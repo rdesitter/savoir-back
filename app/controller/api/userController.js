@@ -11,7 +11,7 @@ const userController = {
     
     try {
       
-      await client.connect();
+     
       const { email, password } = req.body;
       const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
         email,
@@ -48,7 +48,7 @@ const userController = {
   async register(req, res) {
     try{
       
-      await client.connect();
+     
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = await client.query(
         'INSERT INTO "user" (email,password, pseudo ,birthdate, role_id) VALUES ($1,$2,$3,$4,$5) RETURNING *',

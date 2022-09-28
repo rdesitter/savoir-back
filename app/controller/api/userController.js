@@ -36,10 +36,13 @@ const userController = {
         tokens
       });
     } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server error");
+      res.status(500).json({
+             message: err,
+    });
     }
   },
+
+
 
   async register(req, res) {
     await client.connect();

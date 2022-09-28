@@ -5,11 +5,12 @@ const client = require("../../config/db");
 
 const userController = {
   async login(req, res) {
-    await client.connect();
-
+    
+    
     //fetch le user depuis la db basé sur l'email passé en paramètre
-
+    
     try {
+      await client.connect();
       const { email, password } = req.body;
       const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
         email,

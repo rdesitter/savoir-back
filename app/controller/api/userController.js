@@ -5,13 +5,9 @@ const client = require("../../config/db");
 
 const userController = {
   async login(req, res) {
-    
-    
     //fetch le user depuis la db basé sur l'email passé en paramètre
-    
+
     try {
-      
-     
       const { email, password } = req.body;
       const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
         email,
@@ -26,29 +22,25 @@ const userController = {
         password,
         user.rows[0].password
       );
-      
+
       if (!validPassword) {
         return res.status(401).json("Incorrect password");
       }
 
-      let tokens = jwtTokens(user.rows[0])
-    
+      let tokens = jwtTokens(user.rows[0]);
+
       res.json({
-        user : user.rows,
-        tokens
+        user: user.rows,
+        tokens,
       });
     } catch (err) {
-      console.trace(err)
+      console.trace(err);
       res.status(500).render(err.toString());
     }
   },
 
-
-
   async register(req, res) {
-    try{
-      
-     
+    try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = await client.query(
         'INSERT INTO "user" (email,password, pseudo ,birthdate, role_id) VALUES ($1,$2,$3,$4,$5) RETURNING *',
@@ -57,20 +49,17 @@ const userController = {
           hashedPassword,
           req.body.pseudo,
           req.body.birthdate,
-          req.body.role_id, /* by default */
+          req.body.role_id /* by default */,
         ]
       );
       res.json(jwtTokens(newUser.rows[0]));
-    }catch (err) {
-      console.trace(err)
+    } catch (err) {
+      console.trace(err);
       res.status(500).render(err.toString());
     }
   },
 
-
-  message(req,res){
-    res.send("Hello World")
-  }
+ 
 };
 
 module.exports = userController;

@@ -9,10 +9,19 @@ const adDataMapper = {
     async getAllByCategory(category_id) {
       const result = await client.query(
         `
-        SELECT * FROM holds 
-        JOIN ad ON ad.id = holds.ad_id
-        WHERE category_id = $1
+          SELECT * FROM holds 
+          JOIN ad ON ad.id = holds.ad_id
+          WHERE category_id = $1
         `, [category_id]
+      );
+      return result.rows;
+    },
+    async getAllByUser(user_id) {
+      const result = await client.query(
+        `
+          SELECT * FROM ad
+          WHERE user_id = $1;
+        `, [user_id]
       );
       return result.rows;
     }

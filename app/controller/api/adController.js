@@ -10,7 +10,7 @@ const adController = {
     const adsByCategory = await adDataMapper.getAllByCategory(req.params.category_id);
     return res.json(adsByCategory);
   },
-  async getAllByUser(req, res) {
+  async getAllByUser (req, res) {
     const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
     return res.json(adsByUser);
   },
@@ -19,6 +19,10 @@ const adController = {
   async getUserAds (req, res) {
     const userAds = await adDataMapper.getUserAds(req.params.user_id);
     return res.json(userAds);
+  },
+  async createUserAd (req, res) {
+    const userAd = await adDataMapper.createUserAd(req.body);
+    return res.json(userAd);
   }
 };
 

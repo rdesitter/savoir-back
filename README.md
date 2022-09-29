@@ -26,4 +26,4 @@ We are using [Gitmoji](https://gitmoji.dev/) + [conventional commits](https://ww
 :memo: doc : commit name
 ```
 
-test .env
+test .env 2

@@ -25,3 +25,5 @@ We are using [Gitmoji](https://gitmoji.dev/) + [conventional commits](https://ww
 ```bash
 :memo: doc : commit name
 ```
+
+test .env

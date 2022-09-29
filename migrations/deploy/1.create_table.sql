@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS "user"(
     postal_code zip,
     description TEXT,
     picture_id INT REFERENCES picture(id),
-    role_id INT NOT NULL REFERENCES role(id),
+    role_id INT REFERENCES role(id) DEFAULT 2,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

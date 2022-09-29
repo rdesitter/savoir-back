@@ -1,9 +1,10 @@
-require("dotenv").config();
-const client = require("../../config/db");
+const adDataMapper = require('../../models/ad');
 
 const adController = {
-  async getAllAnnonces (req, res) {
-    
+  async getAll (_, res) {
+
+    const ads = await adDataMapper.getAll();
+        return res.json(ads);
 
     
   }

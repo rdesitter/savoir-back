@@ -1,3 +1,4 @@
+const userDataMapper = require("../../models/user");
 const jwtTokens = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
@@ -61,6 +62,11 @@ const userController = {
       console.trace(err);
       res.status(500).render(err.toString());
     }
+  },
+
+  async delete(req, res) {
+    const deleteUser = await userDataMapper.delete(req.params.id);
+    return res.json(deleteUser);
   },
 
  

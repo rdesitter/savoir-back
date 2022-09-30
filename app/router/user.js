@@ -9,5 +9,5 @@ router.get("/",  function message(req, res) {
 
 router.post("/api/register", userController.register);
 router.post("/api/login", userController.login);
-
+router.delete("/api/user/:id",userController.delete)
 module.exports = router;

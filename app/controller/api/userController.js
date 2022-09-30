@@ -70,6 +70,11 @@ const userController = {
     return res.json(deleteUser);
   },
 
+  async edit(req, res) {
+    const editUser = await userDataMapper.edit(req.params.id);
+    return res.json(editUser);
+  }
+
  
 };
 

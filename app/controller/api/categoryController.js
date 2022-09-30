@@ -1,9 +1,14 @@
-const categoryDataMapper = require("../../models/category");
+
+const categoryDataMapper = require('../../models/category');
 
 const categoryController = {
+  async getAll (_, res) {
+    const categories = await categoryDataMapper.getAll();
+    return res.json(categories);
+  },
+
   async edit(req, res) {
     const editCategory = await categoryDataMapper.edit(req.params.id);
-    
     return res.json(editCategory);
   },
 
@@ -12,10 +17,6 @@ const categoryController = {
     return res.json(deleteCategory);
   },
 
- 
-
-
-  
 };
 
 module.exports = categoryController;

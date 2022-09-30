@@ -52,6 +52,7 @@ const userController = {
           req.body.role_id /* by default */,
         ]
       );
+
       let newTokens = jwtTokens(newUser.rows[0])
       res.json({
         newTokens,

@@ -13,6 +13,8 @@ router.delete("/api/annonces/:id",adController.delete)
 // as a user
 router.get("/api/users/annonces/:user_id", adController.getUserAds)
 router.post("/api/users/create-annonces",adController.createUserAd);
+router.patch("/api/annonces/:id",adController.edit)
+
 
 
 module.exports = router;

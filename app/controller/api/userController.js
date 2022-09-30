@@ -71,8 +71,8 @@ const userController = {
   },
 
   async edit(req, res) {
-    const editUser = await userDataMapper.edit(req.params.id);
-    return res.json(editUser);
+    const savedUser = await userDataMapper.edit(req.params.id, req.body);
+    return res.json(savedUser);
   }
 
  

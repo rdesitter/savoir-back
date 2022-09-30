@@ -52,7 +52,11 @@ const userController = {
           req.body.role_id /* by default */,
         ]
       );
-      res.json(jwtTokens(newUser.rows[0]));
+      let newTokens = jwtTokens(newUser.rows[0])
+      res.json({
+        newTokens,
+        newUser : newUser.rows[0].id
+      });
     } catch (err) {
       console.trace(err);
       res.status(500).render(err.toString());

@@ -1,3 +1,4 @@
+
 const client = require('../config/db')
 
 const adDataMapper = {
@@ -33,6 +34,17 @@ const adDataMapper = {
       );
       return result.rows;
     },
+
+    async getAllByType(id){
+        const result = await client.query('SELECT * FROM ad WHERE type_id = $1', [id])
+        return result.rows;
+    },
+
+    // async getOneWithSimilar(id){
+    //     const result = await client.query('SELECT * FROM holds JOIN ad ON ad.id = holds.ad_id WHERE ad.id = $1 ;', [id])
+    //     return result.rows;
+    // },
+
 
     // as a user
     async createUserAd(ad) {

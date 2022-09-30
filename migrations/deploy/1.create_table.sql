@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS "user"(
     lastname TEXT,
     postal_code zip,
     description TEXT,
-    picture_id INT REFERENCES picture(id),
-    role_id INT REFERENCES role(id) DEFAULT 2,
+    picture_id INT REFERENCES picture(id) ON DELETE CASCADE,
+    role_id INT REFERENCES role(id) ON DELETE CASCADE DEFAULT 2 ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -48,15 +48,24 @@ CREATE TABLE IF NOT EXISTS condition(
     name TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS category(
+    id  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    slug TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS ad(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title TEXT NOT NULL,
-    postal_code zip NOT NULL,
+    postal_code zip DEFAULT '',
     image TEXT NOT NULL,
     description TEXT NOT NULL,
-    user_id INT NOT NULL REFERENCES "user"(id),
-    condition_id INT NOT NULL REFERENCES condition(id),
-    type_id INT NOT NULL REFERENCES type(id),
+    user_id INT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    condition_id INT NOT NULL REFERENCES condition(id) ON DELETE CASCADE,
+    type_id INT NOT NULL REFERENCES type(id) ON DELETE CASCADE,
+    category_id INT NOT NULL REFERENCES category(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -67,21 +76,6 @@ CREATE TABLE IF NOT EXISTS label(
     slug TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS category(
-    id  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
-    slug TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS holds(
-    ad_id INTEGER NOT NULL REFERENCES ad(id) ON DELETE CASCADE,
-    category_id INTEGER NOT NULL REFERENCES category(id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (ad_id, category_id)
 );
 
 CREATE TABLE IF NOT EXISTS belong(

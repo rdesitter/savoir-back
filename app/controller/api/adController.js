@@ -41,6 +41,11 @@ const adController = {
      
    },
 
+   async delete(req, res) {
+    const deleteAd = await adDataMapper.delete(req.params.id);
+    return res.json(deleteAd);
+  },
+
 
   
 

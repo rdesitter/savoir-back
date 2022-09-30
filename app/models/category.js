@@ -19,7 +19,7 @@ const categoryDataMapper = {
     },
 
     async delete(id){
-        const result = await client.query('SELECT * FROM ad WHERE type_id = $1', [type_id])
+        const result = await client.query('DELETE FROM category WHERE id = $1', [id])
         return result.rows;
     },
 

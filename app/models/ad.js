@@ -40,10 +40,17 @@ const adDataMapper = {
         return result.rows;
     },
 
-    // async getOneWithSimilar(id){
-    //     const result = await client.query('SELECT * FROM holds JOIN ad ON ad.id = holds.ad_id WHERE ad.id = $1 ;', [id])
-    //     return result.rows;
-    // },
+    async getOneWithSimilar(id){
+        const resultAd = await client.query('SELECT * FROM ad WHERE id = $1',[id])
+        const resultSimilar = await client.query('SELECT * FROM ad LIMIT 5',)
+        return [resultAd.rows, resultSimilar.rows];
+    },
+
+    async delete(id){
+        const result = await client.query('DELETE FROM ad WHERE id = $1', [id])
+        return result.rows;
+    },
+
 
 
     // as a user

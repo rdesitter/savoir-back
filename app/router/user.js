@@ -10,5 +10,5 @@ router.get("/",  function message(req, res) {
 router.post("/api/register", userController.register);
 router.post("/api/login", userController.login);
 router.delete("/api/user/:id",userController.delete)
-router.patch("/api/users/:id",userController.edit)
+router.patch("/api/user/:id",userController.edit)
 module.exports = router;

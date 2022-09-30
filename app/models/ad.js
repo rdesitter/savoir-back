@@ -1,74 +1,100 @@
-
-const client = require('../config/db')
+const client = require("../config/db");
 
 const adDataMapper = {
-    // as a visitor
-    async getAll() {
-        const result = await client.query(
-          `
+  // as a visitor
+  async getAll() {
+    const result = await client.query(
+      `
           SELECT * FROM ad
           `
-        );
-        return result.rows;
-    },
+    );
+    return result.rows;
+  },
 
-    async getAllByCategory(category_id) {
-      const result = await client.query(
-        // todo: quelle sont les infos importantes pour le front ?
-        `
+  async getAllByCategory(category_id) {
+    const result = await client.query(
+      // todo: quelle sont les infos importantes pour le front ?
+      `
           SELECT * FROM holds 
           JOIN ad ON ad.id = holds.ad_id
           WHERE category_id = $1
-        `, [category_id]
-      );
-      return result.rows;
-    },
+        `,
+      [category_id]
+    );
+    return result.rows;
+  },
 
-    async getAllByUser(user_id) {
-      const result = await client.query(
-        // todo: quelle sont les infos importantes pour le front ?
-        `
+  async getAllByUser(user_id) {
+    const result = await client.query(
+      // todo: quelle sont les infos importantes pour le front ?
+      `
           SELECT * FROM ad
           WHERE user_id = $1;
-        `, [user_id]
-      );
-      return result.rows;
-    },
+        `,
+      [user_id]
+    );
+    return result.rows;
+  },
 
-    async getAllByType(id){
-        const result = await client.query('SELECT * FROM ad WHERE type_id = $1', [id])
-        return result.rows;
-    },
+  async getAllByType(id) {
+    const result = await client.query("SELECT * FROM ad WHERE type_id = $1", [
+      id,
+    ]);
+    return result.rows;
+  },
 
-    async getOneWithSimilar(id){
-        const resultAd = await client.query('SELECT * FROM ad WHERE id = $1',[id])
-        const resultSimilar = await client.query('SELECT * FROM ad LIMIT 5',)
-        return [resultAd.rows, resultSimilar.rows];
-    },
+  async getOneWithSimilar(id) {
+    const resultAd = await client.query("SELECT * FROM ad WHERE id = $1", [id]);
+    const resultSimilar = await client.query("SELECT * FROM ad LIMIT 5");
+    return [resultAd.rows, resultSimilar.rows];
+  },
 
-    async delete(id){
-        const result = await client.query('DELETE FROM ad WHERE id = $1', [id])
-        return result.rows;
-    },
+  async delete(id) {
+    const result = await client.query("DELETE FROM ad WHERE id = $1", [id]);
+    return result.rows;
+  },
 
+  // as a user
+  async createUserAd(ad) {
+    const fields = Object.keys(ad).map((prop) => `"${prop}"`);
 
+    const argument = Object.keys(ad).map((index) => `$${index + 1}`);
 
-    // as a user
-    async createUserAd(ad) {
-      const result = await client.query(
-        `
+    const values = Object.values(ad);
+
+    const result = await client.query(
+      `
         INSERT INTO "ad"
-        (title, postal_code, image, description, user_id, condition_id, type_id, category_id)
+        (${fields})
         VALUES
-        ($1, $2, $3, $4, $5, $6, $7, $8)
+        (${argument})
         RETURNING *
-        `, [ad.title, ad.postal_code, ad.image, ad.description, ad.user_id, ad.condition_id, ad.type_id, ad.category_id],
-      );
-      return result.rows;
-    }
-}
+        `,
+      [...values]
+    );
+    return result.rows;
+  },
+
+  async edit(id, ad) {
+    const fields = Object.keys(ad).map((prop, index) => `"${prop}" = $${index + 1}`);
+    console.log(fields)
+    const values = Object.values(ad);
+    console.log(values)
+
+    const savedAd = await client.query(
+        `
+            UPDATE "ad" SET
+                ${fields}
+            WHERE id = $${fields.length + 1}
+            RETURNING *
+        `,
+        [...values, id],
+    );
+
+    return savedAd.rows[0];
+},
 
 
-module.exports = adDataMapper
+};
 
-
+module.exports = adDataMapper;

@@ -46,6 +46,11 @@ const adController = {
     return res.json(deleteAd);
   },
 
+  async edit(req, res) {
+    const savedAd = await adDataMapper.edit(req.params.id, req.body);
+    return res.json(savedAd);
+  }
+
 
   
 

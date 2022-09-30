@@ -26,4 +26,6 @@ We are using [Gitmoji](https://gitmoji.dev/) + [conventional commits](https://ww
 :memo: doc : commit name
 ```
 
-t
+```bash
+:construction: wip : commit name
+```

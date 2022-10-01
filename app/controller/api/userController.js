@@ -3,6 +3,7 @@ const jwtTokens = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const client = require("../../config/db");
+const { contactEmail, resetPasswordEmail } = require("../../utils/nodemailer");
 
 const userController = {
   async login(req, res) {
@@ -69,6 +70,19 @@ const userController = {
     const deleteUser = await userDataMapper.delete(req.params.id);
     return res.json(deleteUser);
   },
+
+  async resetPassword(req, res) {
+    console.log('resetPassword', req.body);
+    const { email } = req.body;
+
+    contactEmail.sendMail(resetPasswordEmail(email), (error) => {
+      if (error) {
+        res.json({ status: "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes." });
+      } else {
+        res.json({ status: "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé." });
+      }
+    });
+  }
 
  
 };

@@ -11,5 +11,6 @@ router.post("/api/register", userController.register);
 router.post("/api/login", userController.login);
 router.delete("/api/user/:id",userController.delete);
 router.post("/user/resetpassword", userController.resetPassword);
+router.post("/api/newpassword", userController.setNewPassword);
 
 module.exports = router;

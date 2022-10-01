@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "apidoc": "apidoc -i app -o apidoc"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,16 @@
     "url": "https://github.com/O-clock-Flamel/projet-11-transmission-des-savoirs-back/issues"
   },
   "homepage": "https://github.com/O-clock-Flamel/projet-11-transmission-des-savoirs-back#readme",
+  "apidoc": {
+    "name": "Savoir",
+    "version": "1.0.0",
+    "description": "knowledge sharing project",
+    "apidoc": {
+      "title": "test"
+    }
+  },
   "dependencies": {
+    "apidoc": "^0.53.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

@@ -49,4 +49,8 @@ To update it, use :
 ```bash
 apidoc -i app -o apidoc
 ```
+
+```bash
+http://localhost:{PORT}/apidoc/
+```
 ***

@@ -93,7 +93,7 @@ const adDataMapper = {
     );
 
     return savedAd.rows[0];
-},
+  },
 };
 
 module.exports = adDataMapper;

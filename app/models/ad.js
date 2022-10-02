@@ -62,9 +62,18 @@ const adDataMapper = {
    * @return {Object} Results of query in JSON formatted
    */
   async getOneWithSimilar(id) {
-    const resultAd = await client.query("SELECT * FROM ad WHERE id = $1", [id]);
-    const resultSimilar = await client.query("SELECT * FROM ad LIMIT 5");
-    return [resultAd.rows, resultSimilar.rows];
+    const resultAd = await (await client.query("SELECT * FROM ad WHERE id = $1", [id]));
+    const category = resultAd.rows[0].category_id;
+    const resultWithoutID = await client.query(
+      `
+        SELECT * FROM ad
+        WHERE id != $1
+        ORDER BY created_at DESC
+      `,
+        [id]
+      );
+    let sameCategory = resultWithoutID.rows.filter(sameCategory => sameCategory.category_id === category);
+    return [resultAd.rows, sameCategory.slice(0, 5)];
   },
   /**
    * @async

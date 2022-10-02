@@ -62,15 +62,13 @@ const adController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-   async getOneWithSimilar(req, res) {
-     const ad = await adDataMapper.getOne(req.params.id);
-
- const similarCandidates = await adDataMapper.getAll();
-
-     return res.json();
-     // manipuler console.log(similarCandidates) avec javascript pour créer un object similar puis créer un json qui contient à la fois ad et similar puis le renvoyer
-     
-   },
+  async getOneWithSimilar(req, res) {
+    const ad = await adDataMapper.getOneWithSimilar(req.params.id);
+    console.log(ad);
+    return res.json(ad);
+    // manipuler console.log(similarCandidates) avec javascript pour créer un object similar puis créer un json qui contient à la fois ad et similar puis le renvoyer
+    
+  },
   /**
    * Ad controller to delete ad
    * @param {*} req Express request object

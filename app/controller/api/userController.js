@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 const client = require("../../config/db");
 const { contactEmail, resetPasswordEmail, formMessage } = require("../../utils/nodemailer");
-const jwt = require("jsonwebtoken");
-const { getUserProfil } = require("../../models/user");
+
+
 
 const userController = {
   async login(req, res) {
@@ -65,12 +65,17 @@ const userController = {
     } catch (err) {
       console.trace(err);
       res.status(500).render(err.toString());
-    }
+    };
   },
 
   async getUserProfil(req, res) {
-    const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
-    return res.json(getUserProfil);
+    try {
+      const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
+      return res.json(getUserProfil);
+    } catch (err) {
+      debug(err)
+      res.status(500).json(err.toString())
+    };
   },
 
   async delete(req, res) {

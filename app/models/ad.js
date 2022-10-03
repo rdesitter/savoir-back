@@ -1,3 +1,4 @@
+const { response } = require("express");
 const client = require("../config/db");
 
 const adDataMapper = {
@@ -73,7 +74,10 @@ const adDataMapper = {
         [id]
       );
     let sameCategory = resultWithoutID.rows.filter(sameCategory => sameCategory.category_id === category);
-    return [resultAd.rows, sameCategory.slice(0, 5)];
+    return {
+      post: resultAd.rows[0],
+      similarPosts : sameCategory.slice(0, 5),
+    }
   },
   /**
    * @async

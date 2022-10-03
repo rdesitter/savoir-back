@@ -11,7 +11,8 @@ const {
   resetPasswordEmail,
   formMessage,
 } = require("../../utils/nodemailer");
-const jwt = require("jsonwebtoken");
+const debug = require('debug')('app:Debug');
+
 
 const userController = {
   async login(req, res) {
@@ -43,7 +44,7 @@ const userController = {
         tokens,
       });
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).render(err.toString());
     }
   },
@@ -68,7 +69,7 @@ const userController = {
         newUser: newUser.rows[0].id,
       });
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).render(err.toString());
     }
   },
@@ -78,7 +79,7 @@ const userController = {
       const deleteUser = await userDataMapper.delete(req.params.id);
       return res.json(deleteUser);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -115,7 +116,7 @@ const userController = {
         }
       );
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -134,8 +135,8 @@ const userController = {
           .json({ message: "Votre mot de passe a bien été modifié." });
       }
     } catch (error) {
-      console.trace(error);
-      res.status(500).json({ message: "Erreur serveur" });
+      debug(error);
+      res.status(500).json(err.toString());
     }
   },
 
@@ -144,7 +145,7 @@ const userController = {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
       return res.json(savedUser);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -165,7 +166,7 @@ const userController = {
         }
       });
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },

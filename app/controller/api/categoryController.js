@@ -1,5 +1,5 @@
 const categoryDataMapper = require("../../models/category");
-
+const debug = require('debug')('app:Debug');
 const categoryController = {
   /**
    * Category controller to get all category
@@ -12,7 +12,7 @@ const categoryController = {
       const categories = await categoryDataMapper.getAll();
       return res.json(categories);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -27,7 +27,7 @@ const categoryController = {
       const editCategory = await categoryDataMapper.edit(req.params.id);
       return res.json(editCategory);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -42,7 +42,7 @@ const categoryController = {
       const deleteCategory = await categoryDataMapper.delete(req.params.id);
       return res.json(deleteCategory);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },

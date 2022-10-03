@@ -1,5 +1,5 @@
 const client = require("../config/db");
-
+const debug = require('debug')('app:Debug');
 const adDataMapper = {
   /**
    *
@@ -14,7 +14,7 @@ const adDataMapper = {
       );
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
   /**
@@ -34,7 +34,7 @@ const adDataMapper = {
       );
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
   /**
@@ -54,7 +54,7 @@ const adDataMapper = {
       );
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
   /**
@@ -69,7 +69,7 @@ const adDataMapper = {
       ]);
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
   /**
@@ -100,7 +100,7 @@ const adDataMapper = {
         similarPosts: sameCategory.slice(0, 5),
       };
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
   /**
@@ -113,7 +113,7 @@ const adDataMapper = {
       const result = await client.query("DELETE FROM ad WHERE id = $1", [id]);
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
   /**
@@ -149,7 +149,7 @@ const adDataMapper = {
       );
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
 
@@ -178,7 +178,7 @@ const adDataMapper = {
 
       return savedAd.rows[0];
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
 };

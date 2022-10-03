@@ -1,4 +1,5 @@
 const client = require("../config/db");
+const debug = require('debug')('app:Debug');
 
 const categoryDataMapper = {
   /**
@@ -16,7 +17,7 @@ const categoryDataMapper = {
       );
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
   /**
@@ -36,7 +37,7 @@ const categoryDataMapper = {
       ]);
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
 };

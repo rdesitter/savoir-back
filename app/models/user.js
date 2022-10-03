@@ -1,4 +1,5 @@
 const client = require("../config/db");
+const debug = require('debug')('app:Debug');
 
 const userDataMapper = {
   async edit(id, user) {
@@ -6,9 +7,9 @@ const userDataMapper = {
       const fields = Object.keys(user).map(
         (prop, index) => `"${prop}" = $${index + 1}`
       );
-      console.log(fields);
+      debug(fields);
       const values = Object.values(user);
-      console.log(values);
+      debug(values);
 
       const savedUser = await client.query(
         `
@@ -22,7 +23,7 @@ const userDataMapper = {
 
       return savedUser.rows[0];
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
 
@@ -33,7 +34,7 @@ const userDataMapper = {
       ]);
       return result.rows;
     } catch (err) {
-      console.trace(err);
+      debug(err);
     }
   },
 };

@@ -1,5 +1,5 @@
 const adDataMapper = require("../../models/ad");
-
+const debug = require('debug')('app:Debug');
 const adController = {
   /**
    * Ad controller to get all ads
@@ -12,7 +12,7 @@ const adController = {
       const ads = await adDataMapper.getAll();
       return res.json(ads);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -29,7 +29,7 @@ const adController = {
       );
       return res.json(adsByCategory);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -44,7 +44,7 @@ const adController = {
       const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
       return res.json(adsByUser);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -54,7 +54,7 @@ const adController = {
       const userAds = await adDataMapper.getUserAds(req.params.user_id);
       return res.json(userAds);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -69,7 +69,7 @@ const adController = {
       const userAd = await adDataMapper.createUserAd(req.body);
       return res.json(userAd);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -84,7 +84,7 @@ const adController = {
       const adsByType = await adDataMapper.getAllByType(req.params.type_id);
       return res.json(adsByType);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -99,7 +99,7 @@ const adController = {
       const ad = await adDataMapper.getOneWithSimilar(req.params.id);
       return res.json(ad);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -114,7 +114,7 @@ const adController = {
       const deleteAd = await adDataMapper.delete(req.params.id);
       return res.json(deleteAd);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },
@@ -129,7 +129,7 @@ const adController = {
       const savedAd = await adDataMapper.edit(req.params.id, req.body);
       return res.json(savedAd);
     } catch (err) {
-      console.trace(err);
+      debug(err);
       res.status(500).json(err.toString());
     }
   },

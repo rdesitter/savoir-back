@@ -100,7 +100,7 @@ const userController = {
       const decode = authorizationMiddleware(req.headers.authorization);
       // console.log(decode)
       const result = await client.query('UPDATE "user" SET password = $2 WHERE email = $1', [decode.email, hashedPassword]);
-      console.log(result)
+      // console.log(result)
       if (result.rowCount === 1) {
         res.status(200).json({ message: "Votre mot de passe a bien été modifié." });
       }

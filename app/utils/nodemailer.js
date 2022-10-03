@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const debug = require('debug')('app:Debug');
 
 const contactEmail = nodemailer.createTransport({
     service: 'gmail',

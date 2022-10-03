@@ -1,6 +1,5 @@
-
-const categoryDataMapper = require('../../models/category');
-
+const categoryDataMapper = require("../../models/category");
+const debug = require('debug')('app:Debug');
 const categoryController = {
   /**
    * Category controller to get all category
@@ -8,9 +7,14 @@ const categoryController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-  async getAll (_, res) {
-    const categories = await categoryDataMapper.getAll();
-    return res.json(categories);
+  async getAll(_, res) {
+    try {
+      const categories = await categoryDataMapper.getAll();
+      return res.json(categories);
+    } catch (err) {
+      debug(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Category controller to update category
@@ -19,8 +23,13 @@ const categoryController = {
    * @returns Route API JSON response
    */
   async edit(req, res) {
-    const editCategory = await categoryDataMapper.edit(req.params.id);
-    return res.json(editCategory);
+    try {
+      const editCategory = await categoryDataMapper.edit(req.params.id);
+      return res.json(editCategory);
+    } catch (err) {
+      debug(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Category controller to delete category
@@ -29,10 +38,14 @@ const categoryController = {
    * @returns Route API JSON response
    */
   async delete(req, res) {
-    const deleteCategory = await categoryDataMapper.delete(req.params.id);
-    return res.json(deleteCategory);
+    try {
+      const deleteCategory = await categoryDataMapper.delete(req.params.id);
+      return res.json(deleteCategory);
+    } catch (err) {
+      debug(err);
+      res.status(500).json(err.toString());
+    }
   },
-
 };
 
 module.exports = categoryController;

@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "apidoc": "apidoc -i app -o apidoc",
-    "dev": "DEBUG=* node server.js"
+    "dev": "DEBUG=* node-dev server.js"
   },
   "repository": {
     "type": "git",

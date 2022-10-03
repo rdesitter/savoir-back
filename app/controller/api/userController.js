@@ -8,8 +8,6 @@ require("dotenv").config();
 const client = require("../../config/db");
 const { contactEmail, resetPasswordEmail, formMessage } = require("../../utils/nodemailer");
 
-
-
 const userController = {
   async login(req, res) {
     //fetch le user depuis la db basé sur l'email passé en paramètre
@@ -146,7 +144,21 @@ const userController = {
     }
   },
 
+  async getAllUsers(_, res) {
+    try {
+      const users = await userDataMapper.getAllUsers();
+      return res.json(users);
+    } catch (err) {
+      debug(err);
+      res.status(500).json(err.toString());
+    }
+  },
+
   async edit(req, res) {
+
+    const savedUser = await userDataMapper.edit(req.params.id, req.body);
+    return res.json(savedUser);
+
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
       return res.json(savedUser);

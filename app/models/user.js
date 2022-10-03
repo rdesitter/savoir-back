@@ -2,6 +2,16 @@ const client = require("../config/db");
 const debug = require('debug')('app:Debug');
 
 const userDataMapper = {
+  async getAllUsers() {
+    try {
+      const users = await client.query('SELECT * FROM "user"');
+      return {
+        users: users.rows
+      };
+    } catch (err) {
+      debug(err);
+    }
+  },
   
     async getUserProfil(id) {
       try {
@@ -71,6 +81,7 @@ const userDataMapper = {
 
 
 }
+
 
 
 module.exports = userDataMapper

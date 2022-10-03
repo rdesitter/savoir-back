@@ -7,10 +7,12 @@ const app = express();
 /** ******** */
 const corsOptions = { credentials: true, origin: "*" };
 const routerIndex = require("./router");
+const { authorizationError } = require("./middlewares/authorizationError");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(routerIndex);
+app.use(authorizationError);
 
 module.exports = app;

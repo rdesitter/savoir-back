@@ -5,6 +5,7 @@ require("dotenv").config();
 const client = require("../../config/db");
 const { contactEmail, resetPasswordEmail, formMessage } = require("../../utils/nodemailer");
 const jwt = require("jsonwebtoken");
+const { getUserProfil } = require("../../models/user");
 
 const userController = {
   async login(req, res) {
@@ -65,6 +66,11 @@ const userController = {
       console.trace(err);
       res.status(500).render(err.toString());
     }
+  },
+
+  async getUserProfil(req, res) {
+    const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
+    return res.json(getUserProfil);
   },
 
   async delete(req, res) {

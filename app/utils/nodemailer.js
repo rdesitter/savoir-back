@@ -31,4 +31,17 @@ const resetPasswordEmail =  (email, token) => {
     }
 };
 
- module.exports = { contactEmail, resetPasswordEmail };
+const formMessage = (datas) => {
+    return {
+        from: `Formulaire de contact <${process.env.GMAIL_ADRESS}>`,
+        to: process.env.GMAIL_ADRESS,
+        subject: "Nouveau message",
+        html:   `<p>Vous avez reçu un nouveau message depuis le formulaire de contact.</p>
+                <p>Email : ${datas.email}
+                <p>Nom : ${datas.fullname} </p>
+                <p>Message : <br />
+                ${datas.message}</p>`,
+    }
+}
+
+ module.exports = { contactEmail, resetPasswordEmail, formMessage };

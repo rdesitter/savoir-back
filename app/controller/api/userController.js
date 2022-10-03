@@ -3,7 +3,7 @@ const {jwtTokens, authorizationMiddleware} = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const client = require("../../config/db");
-const { contactEmail, resetPasswordEmail } = require("../../utils/nodemailer");
+const { contactEmail, resetPasswordEmail, formMessage } = require("../../utils/nodemailer");
 const jwt = require("jsonwebtoken");
 
 const userController = {
@@ -115,7 +115,17 @@ const userController = {
     const savedUser = await userDataMapper.edit(req.params.id, req.body);
     return res.json(savedUser);
 
-  }
+  },
+
+  async contactForm(req, res) {
+    contactEmail.sendMail(formMessage(req.body), (error) => {
+      if (error) {
+        res.json({ status: "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes." });
+      } else {
+        res.json({ status: "Merci. Votre message a bien été envoyé, nous vous répondrons dans les plus brefs délais." });
+      }
+    })
+  },
 
  
 };

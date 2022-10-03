@@ -10,9 +10,9 @@ const contactEmail = nodemailer.createTransport({
 
 contactEmail.verify((error) => {
     if (error) {
-        console.log(error);
+        debug(error);
     } else {
-        console.log("Ready to Send");
+        debug("Ready to Send");
     }
 });
 

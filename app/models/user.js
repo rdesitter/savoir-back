@@ -6,9 +6,9 @@ const userDataMapper = {
 
     async edit(id, user) {
         const fields = Object.keys(user).map((prop, index) => `"${prop}" = $${index + 1}`);
-        console.log(fields)
+        debug(fields)
         const values = Object.values(user);
-        console.log(values)
+        debug(values)
 
         const savedUser = await client.query(
             `

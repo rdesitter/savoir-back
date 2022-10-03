@@ -64,9 +64,9 @@ const adController = {
    */
   async getOneWithSimilar(req, res) {
     const ad = await adDataMapper.getOneWithSimilar(req.params.id);
-    console.log(ad);
+    debug(ad);
     return res.json(ad);
-    // manipuler console.log(similarCandidates) avec javascript pour créer un object similar puis créer un json qui contient à la fois ad et similar puis le renvoyer
+    // manipuler debug(similarCandidates) avec javascript pour créer un object similar puis créer un json qui contient à la fois ad et similar puis le renvoyer
     
   },
   /**

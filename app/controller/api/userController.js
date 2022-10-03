@@ -74,7 +74,7 @@ const userController = {
 
 
   async resetPassword(req, res) {
-    console.log('resetPassword', req.body);
+    debug('resetPassword', req.body);
     const { email } = req.body;
 
     const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
@@ -99,9 +99,9 @@ const userController = {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const decode = authorizationMiddleware(req.headers.authorization);
-      // console.log(decode)
+      // debug(decode)
       const result = await client.query('UPDATE "user" SET password = $2 WHERE email = $1', [decode.email, hashedPassword]);
-      // console.log(result)
+      // debug(result)
       if (result.rowCount === 1) {
         res.status(200).json({ message: "Votre mot de passe a bien été modifié." });
       }

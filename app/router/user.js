@@ -16,4 +16,6 @@ router.post("/api/newpassword", userController.setNewPassword);
 
 router.patch("/api/user/:id",userController.edit)
 
+router.post("/api/contact", userController.contactForm);
+
 module.exports = router;

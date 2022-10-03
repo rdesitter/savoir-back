@@ -120,7 +120,7 @@ const adDataMapper = {
         `,
         [...values]
       );
-      return result.rows;
+      return result.rows[0];
     },
 
     

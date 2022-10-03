@@ -46,7 +46,6 @@ We are using [Gitmoji](https://gitmoji.dev/) + [conventional commits](https://ww
 The documentation was created with [API doc](https://apidocjs.com/#param-api)  
 To update it, use :
 
-
 ```bash
 apidoc -i app -o apidoc
 ```

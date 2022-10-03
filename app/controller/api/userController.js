@@ -72,6 +72,7 @@ const userController = {
     return res.json(deleteUser);
   },
 
+
   async resetPassword(req, res) {
     console.log('resetPassword', req.body);
     const { email } = req.body;
@@ -108,6 +109,12 @@ const userController = {
       console.trace(error);
       res.status(500).json({ message: "Erreur serveur"});
     }
+  },
+
+  async edit(req, res) {
+    const savedUser = await userDataMapper.edit(req.params.id, req.body);
+    return res.json(savedUser);
+
   }
 
  

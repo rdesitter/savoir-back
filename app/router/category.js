@@ -4,9 +4,9 @@ const router = express.Router();
 
 
 
+router.get("/api/categories",categoryController.getAll);
 //router.patch("/api/categories/:id",categoryController.editCategory)
 router.delete("/api/categories/:id",categoryController.delete)
-router.get("/api/categories",categoryController.getAll);
 
 
 

@@ -5,6 +5,8 @@ const router = express.Router();
 
 
 
+router.get("/api/user/:id", userController.getUserProfil);
+
 router.post("/api/register", userController.register);
 router.post("/api/login", userController.login);
 

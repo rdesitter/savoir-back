@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS "user"(
     pronoun TEXT,
     firstname TEXT,
     lastname TEXT,
-    postal_code zip,
+    postal_code zip, --problème création d'une annonce 
     description TEXT,
     picture_id INT REFERENCES picture(id) ON DELETE CASCADE,
     role_id INT REFERENCES role(id) ON DELETE CASCADE DEFAULT 2 ,

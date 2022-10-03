@@ -5,6 +5,7 @@ const categoryRouter = require("./category");
 
 const router = express.Router();
 
+
 router.use(userRouter, adRouter, categoryRouter);
 
 module.exports = router;

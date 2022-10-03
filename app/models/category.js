@@ -1,5 +1,5 @@
 const client = require("../config/db");
-const debug = require('debug')('app:Debug');
+const debug = require("debug")("app:Debug");
 
 const categoryDataMapper = {
   /**

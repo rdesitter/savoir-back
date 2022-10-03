@@ -1,5 +1,5 @@
 const adDataMapper = require("../../models/ad");
-const debug = require('debug')('app:Debug');
+const debug = require("debug")("app:Debug");
 const adController = {
   /**
    * Ad controller to get all ads

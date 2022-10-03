@@ -1,5 +1,5 @@
 const categoryDataMapper = require("../../models/category");
-const debug = require('debug')('app:Debug');
+const debug = require("debug")("app:Debug");
 const categoryController = {
   /**
    * Category controller to get all category

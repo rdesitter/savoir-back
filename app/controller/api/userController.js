@@ -6,7 +6,11 @@ const {
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const client = require("../../config/db");
-const { contactEmail, resetPasswordEmail, formMessage } = require("../../utils/nodemailer");
+const {
+  contactEmail,
+  resetPasswordEmail,
+  formMessage,
+} = require("../../utils/nodemailer");
 
 const userController = {
   async login(req, res) {
@@ -65,7 +69,7 @@ const userController = {
     } catch (err) {
       debug(err);
       res.status(500).render(err.toString());
-    };
+    }
   },
 
   async getUserProfil(req, res) {
@@ -73,9 +77,9 @@ const userController = {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
       return res.json(getUserProfil);
     } catch (err) {
-      debug(err)
-      res.status(500).json(err.toString())
-    };
+      debug(err);
+      res.status(500).json(err.toString());
+    }
   },
 
   async delete(req, res) {
@@ -155,10 +159,6 @@ const userController = {
   },
 
   async edit(req, res) {
-
-    const savedUser = await userDataMapper.edit(req.params.id, req.body);
-    return res.json(savedUser);
-
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
       return res.json(savedUser);

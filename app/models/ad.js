@@ -1,5 +1,5 @@
 const client = require("../config/db");
-const debug = require('debug')('app:Debug');
+const debug = require("debug")("app:Debug");
 const adDataMapper = {
   /**
    *
@@ -134,7 +134,7 @@ const adDataMapper = {
        */
 
       const argument = Object.keys(ad).map((_, index) => `$${index + 1}`);
-      debug(argument)
+      debug(argument);
       const values = Object.values(ad);
 
       const result = await client.query(
@@ -175,9 +175,8 @@ const adDataMapper = {
           `,
         [...values, id]
       );
-debug(savedAd)
-      return {modification : savedAd.rows[0],
-        message : "annonce modifiée"};
+      debug(savedAd);
+      return { modification: savedAd.rows[0], message: "annonce modifiée" };
     } catch (err) {
       debug(err);
     }

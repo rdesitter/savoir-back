@@ -1,3 +1,4 @@
+const { log } = require("console");
 const { response } = require("express");
 const client = require("../config/db");
 
@@ -89,19 +90,24 @@ const adDataMapper = {
     return result.rows;
   },
   /**
-   * 
-   * @param {String} ad Unique identifier of table ad
+   * @param {Object} ad User ad to modify
    * @return {Object} Results of query in JSON formatted
   */
-  async createUserAd(ad) {
+
+  
+   async createUserAd(ad) {
     /**
-     * @param {String} fields Fields of table Ad
+     * @param {String} prop Keys of ad object 
+     * @return {Array}
      */
-    const fields = Object.keys(ad).map((prop) => `"${prop}"`);
+    const fields = Object.keys(ad).map((prop, _) => `"${prop}"`);
+
     /**
-     * @param {String} argument Argments to the SQL function
+     * @param {String} index field index of ad object 
      */
-    const argument = Object.keys(ad).map((index) => `$${index + 1}`);
+    
+    const argument = Object.keys(ad).map((_,index) => `$${index + 1}`);
+   
     const values = Object.values(ad);
 
     const result = await client.query(
@@ -111,11 +117,13 @@ const adDataMapper = {
         VALUES
         (${argument})
         RETURNING *
-      `,
-      [...values]
-    );
-    return result.rows;
-  },
+        `,
+        [...values]
+      );
+      return result.rows;
+    },
+
+    
   /**
    * 
    * @param {String} prop fields of table Ad
@@ -123,9 +131,8 @@ const adDataMapper = {
   */
   async edit(id, ad) {
     const fields = Object.keys(ad).map((prop, index) => `"${prop}" = $${index + 1}`);
-    console.log(fields)
+    
     const values = Object.values(ad);
-    console.log(values)
 
     const savedAd = await client.query(
         `

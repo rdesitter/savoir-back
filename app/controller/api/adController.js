@@ -7,9 +7,14 @@ const adController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-  async getAll (_, res) {
-    const ads = await adDataMapper.getAll();
-    return res.json(ads);
+  async getAll(_, res) {
+    try {
+      const ads = await adDataMapper.getAll();
+      return res.json(ads);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Ad controller to get ad by category
@@ -17,9 +22,16 @@ const adController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-  async getAllByCategory (req, res) {
-    const adsByCategory = await adDataMapper.getAllByCategory(req.params.category_id);
-    return res.json(adsByCategory);
+  async getAllByCategory(req, res) {
+    try {
+      const adsByCategory = await adDataMapper.getAllByCategory(
+        req.params.category_id
+      );
+      return res.json(adsByCategory);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Ad controller to get ad by user
@@ -27,14 +39,24 @@ const adController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-  async getAllByUser (req, res) {
-    const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
-    return res.json(adsByUser);
+  async getAllByUser(req, res) {
+    try {
+      const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
+      return res.json(adsByUser);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
-  
-  async getUserAds (req, res) {
-    const userAds = await adDataMapper.getUserAds(req.params.user_id);
-    return res.json(userAds);
+
+  async getUserAds(req, res) {
+    try {
+      const userAds = await adDataMapper.getUserAds(req.params.user_id);
+      return res.json(userAds);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Ad controller creation ad by user
@@ -42,9 +64,14 @@ const adController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-  async createUserAd (req, res) {
-    const userAd = await adDataMapper.createUserAd(req.body);
-    return res.json(userAd);
+  async createUserAd(req, res) {
+    try {
+      const userAd = await adDataMapper.createUserAd(req.body);
+      return res.json(userAd);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Ad controller to get ad by type
@@ -53,8 +80,13 @@ const adController = {
    * @returns Route API JSON response
    */
   async getAllByType(req, res) {
-    const adsByType = await adDataMapper.getAllByType(req.params.type_id);
-    return res.json(adsByType);
+    try {
+      const adsByType = await adDataMapper.getAllByType(req.params.type_id);
+      return res.json(adsByType);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Ad controller to get one and five similar ads
@@ -63,11 +95,13 @@ const adController = {
    * @returns Route API JSON response
    */
   async getOneWithSimilar(req, res) {
-    const ad = await adDataMapper.getOneWithSimilar(req.params.id);
-    console.log(ad);
-    return res.json(ad);
-    // manipuler console.log(similarCandidates) avec javascript pour créer un object similar puis créer un json qui contient à la fois ad et similar puis le renvoyer
-    
+    try {
+      const ad = await adDataMapper.getOneWithSimilar(req.params.id);
+      return res.json(ad);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Ad controller to delete ad
@@ -75,9 +109,14 @@ const adController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-   async delete(req, res) {
-    const deleteAd = await adDataMapper.delete(req.params.id);
-    return res.json(deleteAd);
+  async delete(req, res) {
+    try {
+      const deleteAd = await adDataMapper.delete(req.params.id);
+      return res.json(deleteAd);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
   /**
    * Ad controller to update ad
@@ -86,9 +125,14 @@ const adController = {
    * @returns Route API JSON response
    */
   async edit(req, res) {
-    const savedAd = await adDataMapper.edit(req.params.id, req.body);
-    return res.json(savedAd);
-  }
+    try {
+      const savedAd = await adDataMapper.edit(req.params.id, req.body);
+      return res.json(savedAd);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
+  },
 };
 
 module.exports = adController;

@@ -1,15 +1,21 @@
 const userDataMapper = require("../../models/user");
-const {jwtTokens, authorizationMiddleware} = require("../../utils/jwt-helpers");
+const {
+  jwtTokens,
+  authorizationMiddleware,
+} = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const client = require("../../config/db");
-const { contactEmail, resetPasswordEmail, formMessage } = require("../../utils/nodemailer");
+const {
+  contactEmail,
+  resetPasswordEmail,
+  formMessage,
+} = require("../../utils/nodemailer");
 const jwt = require("jsonwebtoken");
 
 const userController = {
   async login(req, res) {
     //fetch le user depuis la db basé sur l'email passé en paramètre
-
     try {
       const { email, password } = req.body;
       const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
@@ -56,10 +62,10 @@ const userController = {
         ]
       );
 
-      let newTokens = jwtTokens(newUser.rows[0])
+      let newTokens = jwtTokens(newUser.rows[0]);
       res.json({
         newTokens,
-        newUser : newUser.rows[0].id
+        newUser: newUser.rows[0].id,
       });
     } catch (err) {
       console.trace(err);
@@ -68,66 +74,101 @@ const userController = {
   },
 
   async delete(req, res) {
-    const deleteUser = await userDataMapper.delete(req.params.id);
-    return res.json(deleteUser);
+    try {
+      const deleteUser = await userDataMapper.delete(req.params.id);
+      return res.json(deleteUser);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
 
-
   async resetPassword(req, res) {
-    console.log('resetPassword', req.body);
-    const { email } = req.body;
+    try {
+      const { email } = req.body;
 
-    const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
-      email,
-    ]);
+      const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
+        email,
+      ]);
 
-    if (user.rows.length === 0)
-      return res.status(401).json({ status: "Nous n'avons trouvé aucun utilisateur avec cet email." });
+      if (user.rows.length === 0)
+        return res.status(401).json({
+          status: "Nous n'avons trouvé aucun utilisateur avec cet email.",
+        });
 
-    let newTokens = jwtTokens(user.rows[0])
+      let newTokens = jwtTokens(user.rows[0]);
 
-    contactEmail.sendMail(resetPasswordEmail(email, newTokens.accessToken), (error) => {
-      if (error) {
-        res.json({ status: "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes." });
-      } else {
-        res.json({ status: "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé." });
-      }
-    });
+      contactEmail.sendMail(
+        resetPasswordEmail(email, newTokens.accessToken),
+        (error) => {
+          if (error) {
+            res.json({
+              status:
+                "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
+            });
+          } else {
+            res.json({
+              status:
+                "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé.",
+            });
+          }
+        }
+      );
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
 
   async setNewPassword(req, res) {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const decode = authorizationMiddleware(req.headers.authorization);
-      // console.log(decode)
-      const result = await client.query('UPDATE "user" SET password = $2 WHERE email = $1', [decode.email, hashedPassword]);
-      // console.log(result)
+      const result = await client.query(
+        'UPDATE "user" SET password = $2 WHERE email = $1',
+        [decode.email, hashedPassword]
+      );
       if (result.rowCount === 1) {
-        res.status(200).json({ message: "Votre mot de passe a bien été modifié." });
+        res
+          .status(200)
+          .json({ message: "Votre mot de passe a bien été modifié." });
       }
     } catch (error) {
       console.trace(error);
-      res.status(500).json({ message: "Erreur serveur"});
+      res.status(500).json({ message: "Erreur serveur" });
     }
   },
 
   async edit(req, res) {
-    const savedUser = await userDataMapper.edit(req.params.id, req.body);
-    return res.json(savedUser);
-
+    try {
+      const savedUser = await userDataMapper.edit(req.params.id, req.body);
+      return res.json(savedUser);
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
 
   async contactForm(req, res) {
-    contactEmail.sendMail(formMessage(req.body), (error) => {
-      if (error) {
-        res.json({ status: "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes." });
-      } else {
-        res.json({ status: "Merci. Votre message a bien été envoyé, nous vous répondrons dans les plus brefs délais." });
-      }
-    })
+    try {
+      contactEmail.sendMail(formMessage(req.body), (error) => {
+        if (error) {
+          res.json({
+            status:
+              "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
+          });
+        } else {
+          res.json({
+            status:
+              "Merci. Votre message a bien été envoyé, nous vous répondrons dans les plus brefs délais.",
+          });
+        }
+      });
+    } catch (err) {
+      console.trace(err);
+      res.status(500).json(err.toString());
+    }
   },
-
- 
 };
 
 module.exports = userController;

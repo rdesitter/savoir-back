@@ -79,11 +79,10 @@ const adDataMapper = {
    */
   async getOneWithSimilar(id) {
     try {
-      const resultAd = await client.query(
-        "SELECT * FROM ad WHERE id = $1",
-        [id]
-      );
-      console.log(resultAd.rowCount)
+      const resultAd = await client.query("SELECT * FROM ad WHERE id = $1", [
+        id,
+      ]);
+      console.log(resultAd.rowCount);
       if (resultAd.rowCount === 0) {
         return null;
       }
@@ -110,9 +109,10 @@ const adDataMapper = {
 
   async getAllByTypeAndCategory(type_id, category_id) {
     try {
-      const result = await client.query("SELECT * FROM ad WHERE type_id = $1 AND category_id = $2", [
-        type_id, category_id
-      ]);
+      const result = await client.query(
+        "SELECT * FROM ad WHERE type_id = $1 AND category_id = $2",
+        [type_id, category_id]
+      );
       return result.rows;
     } catch (err) {
       debug(err);
@@ -164,14 +164,10 @@ const adDataMapper = {
       );
 
       return result.rows[0];
-    },
-
-      
     } catch (err) {
       debug(err);
     }
   },
-
 
   /**
    *

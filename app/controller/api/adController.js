@@ -27,7 +27,12 @@ const adController = {
       const adsByCategory = await adDataMapper.getAllByCategory(
         req.params.category_id
       );
-      return res.json(adsByCategory);
+  
+      if (adsByCategory.status === 500) {
+        return res.status(500).json(adsByCategory.message);
+      }
+      
+      res.json(adsByCategory);
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

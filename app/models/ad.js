@@ -32,6 +32,12 @@ const adDataMapper = {
         `,
         [category_id]
       );
+      if (result.rowCount === 0) {
+        return {
+          status : 500,
+          message: "Aucune annonce trouvée",
+        }
+      }
       return result.rows;
     } catch (err) {
       debug(err);

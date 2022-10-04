@@ -97,7 +97,10 @@ const adController = {
   async getOneWithSimilar(req, res) {
     try {
       const ad = await adDataMapper.getOneWithSimilar(req.params.id);
-      return res.json(ad);
+      if (ad.status === 500) {
+        res.status(500).json({message: "no data"});
+      }
+      res.json(ad);
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

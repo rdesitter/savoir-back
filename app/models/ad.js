@@ -79,10 +79,14 @@ const adDataMapper = {
    */
   async getOneWithSimilar(id) {
     try {
-      const resultAd = await await client.query(
+      const resultAd = await client.query(
         "SELECT * FROM ad WHERE id = $1",
         [id]
       );
+      console.log(resultAd.rowCount)
+      if (resultAd.rowCount === 0) {
+        return null;
+      }
       const category = resultAd.rows[0].category_id;
       const resultWithoutID = await client.query(
         `

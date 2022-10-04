@@ -1,12 +1,13 @@
 require("dotenv").config();
-const express = require("express");
 const app = require("./app");
+const debug = require('debug')('app:Debug');
+debug('this is a log message!');
 
 const port = process.env.PORT;
 
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  debug(`Example app listening on port ${port}`);
 });
 

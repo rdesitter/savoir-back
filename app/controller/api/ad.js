@@ -189,7 +189,7 @@ router.get("/api/annonces/:id",adController.getOneWithSimilar)
  *      "id": "mettre un exemple",
  *    }
  */
-router.get("/api/annonces/category/:category_id/type/:type_id", adController.getAllByTypeAndCategory)
+router.get("/api/annonces/category/:category_id/type/:type_id", adController.getAllByCategoryAndType)
 /**
  * @api {get} /api/users/annonces/:user_id Get ad by user_id
  * @apiName getUserAds

@@ -107,6 +107,17 @@ const adDataMapper = {
       debug(err);
     }
   },
+
+  async getAllByTypeAndCategory(type_id, category_id) {
+    try {
+      const result = await client.query("SELECT * FROM ad WHERE type_id = $1 AND category_id = $2", [
+        type_id, category_id
+      ]);
+      return result.rows;
+    } catch (err) {
+      debug(err);
+    }
+  },
   /**
    * @async
    * @param {Number} id Unique identifier of ad

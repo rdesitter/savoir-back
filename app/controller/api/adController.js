@@ -106,6 +106,17 @@ const adController = {
       res.status(500).json(err.toString());
     }
   },
+
+  async getAllByTypeAndCategory(req, res) {
+    try {
+      const adsByTypeAndCategory = await adDataMapper.getAllByTypeAndCategory(req.params.type_id, req.params.category_id);
+      return res.json(adsByTypeAndCategory);
+    } catch (err) {
+      debug(err);
+      res.status(500).json(err.toString());
+    }
+  },
+
   /**
    * Ad controller to delete ad
    * @param {*} req Express request object

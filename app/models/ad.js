@@ -168,7 +168,12 @@ const adDataMapper = {
         condition.id AS condition_id, condition.name AS condition_name,
         type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
         FROM ad 
-        JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id WHERE type_id = $1 AND category_id = $2`,
+        JOIN "user" ON "user".id = ad.user_id 
+        JOIN category ON category.id = ad.category_id 
+        JOIN condition ON condition.id = ad.condition_id 
+        JOIN type ON type.id = ad.type_id 
+        JOIN picture ON picture.id = "user".picture_id 
+        WHERE type_id = $1 AND category_id = $2`,
         [type_id, category_id]
       );
       if (result.rowCount === 0) {

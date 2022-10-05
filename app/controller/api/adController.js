@@ -67,7 +67,7 @@ const adController = {
   async getUserAds(req, res) {
     try {
       const userAds = await adDataMapper.getUserAds(req.params.user_id);
-      if (adsByCategory.rowsCount === 0){
+      if (userAds.rowsCount === 0){
         return res.status(204).json({
           status: "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
         })

@@ -186,7 +186,6 @@ const userController = {
   async edit(req, res) {
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
-      // Vérification des champs obligatoires ?
       if (savedUser.rowCount === 0) {
         res
           .status(304)

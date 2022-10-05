@@ -12,7 +12,7 @@ const categoryController = {
       const categories = await categoryDataMapper.getAll();
       if (categories.rowsCount === 0) {
         return res.status(204).json({
-          status: "Nous n'avons trouvé aucun profil d'utilisateur.",
+          status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
       }
       return res.json(categories);

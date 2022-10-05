@@ -33,7 +33,7 @@ const adController = {
       debug(adsByCategory)
       if (adsByCategory.rowCount === 0){
         return res.status(204).json({
-          status: "Nous n'avons trouvé aucune annonce pour cette catégorie.",
+          status: "Nous n'avons trouvé aucune annonce pour cet·tete catégorie.",
         })
       }
         return res.json(adsByCategory);
@@ -53,7 +53,7 @@ const adController = {
       const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
       if (adsByUser.rowsCount === 0){
         return res.status(204).json({
-          status: "Nous n'avons trouvé aucune annonce pour cet utilisateur.",
+          status: "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
         })
       }
       return res.json(adsByUser);
@@ -69,7 +69,7 @@ const adController = {
       const userAds = await adDataMapper.getUserAds(req.params.user_id);
       if (adsByCategory.rowsCount === 0){
         return res.status(204).json({
-          status: "Nous n'avons trouvé aucune annonce pour cet utilisateur.",
+          status: "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
         })
       }
       return res.json(userAds);

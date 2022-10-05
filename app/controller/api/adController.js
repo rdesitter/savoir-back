@@ -10,7 +10,11 @@ const adController = {
   async getAll(_, res) {
     try {
       const ads = await adDataMapper.getAll();
-      debug(ads)
+      if (ads.rowsCount === 0){
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucune annonce.",
+        })
+      }
       return res.json(ads);
     } catch (err) {
       debug(err);
@@ -25,10 +29,14 @@ const adController = {
    */
   async getAllByCategory(req, res) {
     try {
-      const adsByCategory = await adDataMapper.getAllByCategory(
-        req.params.category_id
-      );
-      return res.json(adsByCategory);
+      const adsByCategory = await adDataMapper.getAllByCategory(req.params.category_id);
+      debug(adsByCategory)
+      if (adsByCategory.rowCount === 0){
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucune annonce pour cette catégorie.",
+        })
+      }
+        return res.json(adsByCategory);
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -43,7 +51,13 @@ const adController = {
   async getAllByUser(req, res) {
     try {
       const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
+      if (adsByUser.rowsCount === 0){
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucune annonce pour cet utilisateur.",
+        })
+      }
       return res.json(adsByUser);
+      
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -53,6 +67,11 @@ const adController = {
   async getUserAds(req, res) {
     try {
       const userAds = await adDataMapper.getUserAds(req.params.user_id);
+      if (adsByCategory.rowsCount === 0){
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucune annonce pour cet utilisateur.",
+        })
+      }
       return res.json(userAds);
     } catch (err) {
       debug(err);
@@ -68,7 +87,13 @@ const adController = {
   async createUserAd(req, res) {
     try {
       const userAd = await adDataMapper.createUserAd(req.body);
+      if (userAd.rowsCount === 0){
+        return res.status(304).json({
+          status: "L'annonce n'a pas pu être crée",
+        })
+      }
       return res.json(userAd);
+
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -83,7 +108,13 @@ const adController = {
   async getAllByType(req, res) {
     try {
       const adsByType = await adDataMapper.getAllByType(req.params.type_id);
+      if (adsByType.rowsCount === 0){
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucune annonce pour ce type.",
+        })
+      }
       return res.json(adsByType);
+      
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -101,6 +132,11 @@ const adController = {
       if (ad.status === 500) {
         res.status(500).json({message: "no data"});
       }
+      if (ad.rowCount === 0){
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucune annonce.",
+        })
+      }
       res.json(ad);
     } catch (err) {
       debug(err);
@@ -111,6 +147,11 @@ const adController = {
   async getAllByTypeAndCategory(req, res) {
     try {
       const adsByTypeAndCategory = await adDataMapper.getAllByTypeAndCategory(req.params.type_id, req.params.category_id);
+      if (adsByTypeAndCategory.rowsCount === 0){
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucune annonce pour ce type et cette catégorie.",
+        })
+      }
       return res.json(adsByTypeAndCategory);
     } catch (err) {
       debug(err);
@@ -127,6 +168,11 @@ const adController = {
   async delete(req, res) {
     try {
       const deleteAd = await adDataMapper.delete(req.params.id);
+      if (deleteAd.rowCount === 0) {
+        return res.status(304).json({
+          status: "L'annonce n'a pas pu être supprimé",
+        });
+      }
       return res.json(deleteAd);
     } catch (err) {
       debug(err);
@@ -142,6 +188,11 @@ const adController = {
   async edit(req, res) {
     try {
       const savedAd = await adDataMapper.edit(req.params.id, req.body);
+      if (savedAd.rowCount === 0) {
+        res
+          .status(304)
+          .json({ message: "Votre annonce n'a pas été modifié." });
+      }
       return res.json(savedAd);
     } catch (err) {
       debug(err);

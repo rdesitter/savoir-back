@@ -42,6 +42,11 @@ const adDataMapper = {
         `,
         [category_id]
       );
+      if (result.rowCount === 0) {
+        return {
+          status: "Nous n'avons trouvé aucune annonce pour cette categorie.",
+        };
+      } 
       return result.rows;
     } catch (err) {
       debug(err);
@@ -67,6 +72,11 @@ const adDataMapper = {
         `,
         [user_id]
       );
+      if (result.rowCount === 0) {
+        return {
+          status: "Nous n'avons trouvé annonce pour cet·te utilisateur·ice",
+        };
+      } 
       return result.rows;
     } catch (err) {
       debug(err);
@@ -88,6 +98,11 @@ const adDataMapper = {
         JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id WHERE type_id = $1`,
         [id]
       );
+      if (result.rowCount === 0) {
+        return {
+          status: "Nous n'avons trouvé aucune annonce pour ce type.",
+        };
+      } 
       return result.rows;
     } catch (err) {
       debug(err);
@@ -112,10 +127,12 @@ const adDataMapper = {
         [id]
       );
       // SELECT (Le même style de champs de adsOfUser) FROM ad JOIN "user" ON user.id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id WHERE id = $1
-      console.log(resultAd.rowCount);
+      //console.log(resultAd.rowCount);
       if (resultAd.rowCount === 0) {
-        return null;
-      }
+        return {
+          status: "Nous n'avons trouvé aucune annonce.",
+        };
+      } 
       const category = resultAd.rows[0].category_id;
       const resultWithoutID = await client.query(
         `
@@ -128,9 +145,12 @@ const adDataMapper = {
         `,
         [id]
       );
+   
+      
       let sameCategory = resultWithoutID.rows.filter(
         (sameCategory) => sameCategory.category_id === category
       );
+     
       return {
         post: resultAd.rows[0],
         similarPosts: sameCategory.slice(0, 5),
@@ -151,6 +171,11 @@ const adDataMapper = {
         JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id WHERE type_id = $1 AND category_id = $2`,
         [type_id, category_id]
       );
+      if (result.rowCount === 0) {
+        return {
+          status: "Nous n'avons trouvé aucune annonce qui correspond à ce type et cette categorie.",
+        };
+      } 
       return result.rows;
     } catch (err) {
       debug(err);
@@ -164,6 +189,17 @@ const adDataMapper = {
   async delete(id) {
     try {
       const result = await client.query("DELETE FROM ad WHERE id = $1", [id]);
+      debug(result)
+      if (result.rowCount === 0) {
+        return {
+          status: "L'annonce n'a pas pu être supprimée.",
+        };
+      } 
+      if (result.rowCount === 1) {
+        return {
+          status: "L'annonce vient d'être supprimée",
+        };
+      } 
       return result.rows;
     } catch (err) {
       debug(err);
@@ -200,6 +236,13 @@ const adDataMapper = {
           `,
         [...values]
       );
+      
+      if (result.rowCount === 0) {
+        return {
+          status: "L'annonce n'a pas pu être crée",
+        };
+      } 
+      
 
       return result.rows[0];
     } catch (err) {
@@ -229,7 +272,11 @@ const adDataMapper = {
           `,
         [...values, id]
       );
-      debug(savedAd);
+      if (savedAd.rowCount === 0) {
+        return {
+          status: "L'annonce n'a pas pu être modifiée.",
+        };
+      } 
       return { modification: savedAd.rows[0], message: "annonce modifiée" };
     } catch (err) {
       debug(err);

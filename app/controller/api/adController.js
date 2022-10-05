@@ -10,6 +10,7 @@ const adController = {
   async getAll(_, res) {
     try {
       const ads = await adDataMapper.getAll();
+      debug(ads)
       return res.json(ads);
     } catch (err) {
       debug(err);

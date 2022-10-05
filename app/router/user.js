@@ -11,7 +11,7 @@ router.post("/api/register", userController.register);
 router.post("/api/login", userController.login);
 
 router.delete("/api/user/:id",userController.delete);
-router.post("/user/resetpassword", userController.resetPassword);
+router.post("/api/resetpassword", userController.resetPassword);
 router.post("/api/newpassword", userController.setNewPassword);
 
 router.patch("/api/user/:id",userController.edit)

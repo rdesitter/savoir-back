@@ -9,7 +9,12 @@ const adDataMapper = {
     try {
       const result = await client.query(
         `
-          SELECT * FROM ad
+          SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+          category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+          condition.id AS condition_id, condition.name AS condition_name,
+          type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+          FROM ad
+          JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
         `
       );
       return result.rows;
@@ -27,7 +32,12 @@ const adDataMapper = {
       const result = await client.query(
         // todo: quelle sont les infos importantes pour le front ?
         `
-          SELECT * FROM ad
+          SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+          category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+          condition.id AS condition_id, condition.name AS condition_name,
+          type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+          FROM ad
+          JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
           WHERE category_id = $1
         `,
         [category_id]
@@ -47,7 +57,12 @@ const adDataMapper = {
       const result = await client.query(
         // todo: quelle sont les infos importantes pour le front ?
         `
-          SELECT * FROM ad
+          SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+          category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+          condition.id AS condition_id, condition.name AS condition_name,
+          type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+          FROM ad 
+          JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
           WHERE user_id = $1;
         `,
         [user_id]
@@ -64,9 +79,15 @@ const adDataMapper = {
    */
   async getAllByType(id) {
     try {
-      const result = await client.query("SELECT * FROM ad WHERE type_id = $1", [
-        id,
-      ]);
+      const result = await client.query(
+        `SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+        category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+        condition.id AS condition_id, condition.name AS condition_name,
+        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+        FROM ad 
+        JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id WHERE type_id = $1`,
+        [id]
+      );
       return result.rows;
     } catch (err) {
       debug(err);
@@ -79,9 +100,18 @@ const adDataMapper = {
    */
   async getOneWithSimilar(id) {
     try {
-      const resultAd = await client.query("SELECT * FROM ad WHERE id = $1", [
-        id,
-      ]);
+      const resultAd = await client.query(
+        `
+      SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+      category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+      condition.id AS condition_id, condition.name AS condition_name,
+      type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+      FROM ad 
+      JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id 
+      WHERE "user".id = $1`,
+        [id]
+      );
+      // SELECT (Le même style de champs de adsOfUser) FROM ad JOIN "user" ON user.id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id WHERE id = $1
       console.log(resultAd.rowCount);
       if (resultAd.rowCount === 0) {
         return null;
@@ -89,9 +119,12 @@ const adDataMapper = {
       const category = resultAd.rows[0].category_id;
       const resultWithoutID = await client.query(
         `
-          SELECT * FROM ad
-          WHERE id != $1
-          ORDER BY created_at DESC
+        SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+        category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+        condition.id AS condition_id, condition.name AS condition_name,
+        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug FROM ad JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
+        WHERE "user".id != $1
+        ORDER BY created_at DESC
         `,
         [id]
       );
@@ -110,7 +143,12 @@ const adDataMapper = {
   async getAllByTypeAndCategory(type_id, category_id) {
     try {
       const result = await client.query(
-        "SELECT * FROM ad WHERE type_id = $1 AND category_id = $2",
+        `SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+        category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+        condition.id AS condition_id, condition.name AS condition_name,
+        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+        FROM ad 
+        JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id WHERE type_id = $1 AND category_id = $2`,
         [type_id, category_id]
       );
       return result.rows;

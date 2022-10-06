@@ -223,6 +223,16 @@ const userController = {
       res.status(500).json(err.toString());
     }
   },
+
+  async getAllAvatars(req, res) {
+    try {
+      const avatars = await userDataMapper.getAllAvatars();
+      if (!avatars) return res.status(404).json({message: "Pas d'avatars disponibles."})
+      res.status(200).json(avatars)
+    } catch (err) {
+      debug(err);
+    }
+  },
 };
 
 module.exports = userController;

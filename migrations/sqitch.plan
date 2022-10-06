@@ -1,4 +1,5 @@
 %syntax-version=1.0.0
-%project=transmission
+%project=savoir
 
-1.create_table 2022-09-26T08:10:45Z Alizéa massé <alizeamasse@MacBook-Pro-de-user.local> # Create table
+1.create_table 2022-10-06T11:49:15Z System Administrator <root@MBP-de-Benoit> # create table
+2.seeding 2022-10-06T12:46:33Z System Administrator <root@MBP-de-Benoit> # write data

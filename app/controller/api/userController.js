@@ -177,7 +177,6 @@ const userController = {
       res.status(304).json({ message: "Votre mot de passe n'a pas pu être modifié." });
     } catch (error) {
       debug(error);
-      res.status(500).json(err.toString());
     }
   },
 

@@ -5,6 +5,12 @@ const userDataMapper = {
   async getAllUsers() {
     try {
       const users = await client.query('SELECT * FROM "user"');
+      if (users.rowCount === 0) {
+        return {
+          status: "Il n'a aucun·e utilisateur·ice",
+        };
+      }
+
       return {
         users: users.rows,
       };
@@ -40,7 +46,11 @@ const userDataMapper = {
           `,
         [id]
       );
-
+      if (resultUser.rowCount === 0) {
+        return {
+          status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
+        };
+      }
       return {
         user: resultUser.rows[0],
         adsOfUser: adsOfUser.rows,
@@ -67,7 +77,11 @@ const userDataMapper = {
             `,
       [...values, id]
     );
-
+    if (savedUser.rowCount === 0) {
+      return {
+        status: "L'utilisateur·ice n'a pas pu être modifié·e",
+      };
+    }
     return savedUser.rows[0];
   },
 
@@ -76,11 +90,29 @@ const userDataMapper = {
       const result = await client.query('DELETE FROM "user" WHERE id = $1', [
         id,
       ]);
+      if (result.rowCount === 0) {
+        return {
+          status: "L'utilisateur·ice n'a pas pu être supprimé·e",
+        };
+      }
       return result.rows;
     } catch (err) {
       debug(err);
     }
   },
+
+  async getAllAvatars() {
+    try {
+      const results = await client.query('SELECT * FROM picture');
+      console.log(results)
+      if (results.rowCount === 0) {
+        throw new Error('No avatars')
+      }
+      return results.rows;
+    } catch (err) {
+      debug(err);
+    }
+  }
 };
 
 module.exports = userDataMapper;

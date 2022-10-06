@@ -1,4 +1,5 @@
 const userDataMapper = require("../../models/user");
+const debug = require("debug")("app:Debug");
 const {
   jwtTokens,
   authorizationMiddleware,
@@ -17,12 +18,18 @@ const userController = {
     //fetch le user depuis la db basé sur l'email passé en paramètre
     try {
       const { email, password } = req.body;
-      const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
+      const user = await client.query(
+        `SELECT "user".id, "user".pseudo, "user".email, "user".password, "user".birthdate, "user".pronoun, "user".firstname, "user".lastname, "user".postal_code, "user".description, "user".picture_id, "user".role_id, "user".created_at, "user".updated_at,
+        picture.name as picture_name, picture.slug as picture_slug
+        FROM "user"
+        JOIN picture ON picture.id = "user".picture_id
+        WHERE email = $1`, [
         email,
       ]);
 
-      if (user.rows.length === 0)
-        return res.status(401).json({ error: "Email is incorrect" });
+      if (user.rows.length === 0) {
+        return res.status(401).json({ error: "L'email est incorrect" });
+      }
 
       //check que le mot de passe du user est correct
 
@@ -32,13 +39,13 @@ const userController = {
       );
 
       if (!validPassword) {
-        return res.status(401).json("Incorrect password");
+        return res.status(401).json("Mot de passe incorrect");
       }
 
       let tokens = jwtTokens(user.rows[0]);
 
       res.json({
-        user: user.rows,
+        user: user.rows[0],
         tokens,
       });
     } catch (err) {
@@ -62,6 +69,14 @@ const userController = {
       );
 
       let newTokens = jwtTokens(newUser.rows[0]);
+      if (!newUser) {
+        return res.status(304).json({
+          status: "L'utilisateur·ice n'a pas pu être ajouté·e",
+        });
+      }
+      // A verifier avec le front
+      //if (!req.body.email)
+      //return res.status(204).json({ error: "Email obligatoire" });
       res.json({
         newTokens,
         newUser: newUser.rows[0].id,
@@ -75,6 +90,11 @@ const userController = {
   async getUserProfil(req, res) {
     try {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
+      if (!getUserProfil) {
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
+        });
+      }
       return res.json(getUserProfil);
     } catch (err) {
       debug(err);
@@ -85,6 +105,11 @@ const userController = {
   async delete(req, res) {
     try {
       const deleteUser = await userDataMapper.delete(req.params.id);
+      if (!deleteUser) {
+        return res.status(304).json({
+          status: "utilisateur·ice n'a pas pu être supprimé·e",
+        });
+      }
       return res.json(deleteUser);
     } catch (err) {
       debug(err);
@@ -100,9 +125,9 @@ const userController = {
         email,
       ]);
 
-      if (user.rows.length === 0)
+      if (!user)
         return res.status(401).json({
-          status: "Nous n'avons trouvé aucun utilisateur avec cet email.",
+          status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
 
       let newTokens = jwtTokens(user.rows[0]);
@@ -137,10 +162,10 @@ const userController = {
         'UPDATE "user" SET password = $2 WHERE email = $1',
         [decode.email, hashedPassword]
       );
-      if (result.rowCount === 1) {
+      if (!result) {
         res
-          .status(200)
-          .json({ message: "Votre mot de passe a bien été modifié." });
+          .status(304)
+          .json({ message: "Votre mot de passe n'a pas pu être modifié." });
       }
     } catch (error) {
       debug(error);
@@ -151,6 +176,11 @@ const userController = {
   async getAllUsers(_, res) {
     try {
       const users = await userDataMapper.getAllUsers();
+      if (!users) {
+        return res.status(204).json({
+          status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
+        });
+      }
       return res.json(users);
     } catch (err) {
       debug(err);
@@ -161,6 +191,11 @@ const userController = {
   async edit(req, res) {
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
+      if (!savedUser) {
+        res
+          .status(304)
+          .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
+      }
       return res.json(savedUser);
     } catch (err) {
       debug(err);
@@ -186,6 +221,16 @@ const userController = {
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
+    }
+  },
+
+  async getAllAvatars(req, res) {
+    try {
+      const avatars = await userDataMapper.getAllAvatars();
+      if (!avatars) return res.status(404).json({message: "Pas d'avatars disponibles."})
+      res.status(200).json(avatars)
+    } catch (err) {
+      debug(err);
     }
   },
 };

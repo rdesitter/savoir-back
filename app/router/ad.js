@@ -175,7 +175,35 @@ router.get("/api/annonces/type/:type_id",adController.getAllByType) /* ajout /ty
  *    }
  */
 router.get("/api/annonces/:id",adController.getOneWithSimilar)
-
+/**
+ * @api {get} /api/annonces/category/:category_id/type/:type_id Get ad by category and type
+ * @apiName getAllByCategoryAndType
+ * @apiGroup Ad
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {Number} id Ad unique identifier
+ * 
+ * @apiSuccess {Object} returns ad
+ * @apiSuccessExample Succes-Response:
+ *    {
+ *      "id": "mettre un exemple",
+ *    }
+ */
+router.get("/api/annonces/category/:category_id/type/:type_id", adController.getAllByTypeAndCategory)
+/**
+ * @api {get} /api/users/annonces/:user_id Get ad by user_id
+ * @apiName getUserAds
+ * @apiGroup Ad
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {Number} id Ad unique identifier
+ * 
+ * @apiSuccess {Object} returns ad
+ * @apiSuccessExample Succes-Response:
+ *    {
+ *      "id": "mettre un exemple",
+ *    }
+ */
 router.get("/api/users/annonces/:user_id", adController.getUserAds)
 /**
  * @api {post} /api/users/create-annonces Create

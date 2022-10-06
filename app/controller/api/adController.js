@@ -31,7 +31,7 @@ const adController = {
     try {
       const adsByCategory = await adDataMapper.getAllByCategory(req.params.category_id);
       debug(adsByCategory)
-      if (adsByCategory.rowCount === 0){
+      if (!adsByCategory){
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce pour cette catégorie.",
         })
@@ -51,7 +51,7 @@ const adController = {
   async getAllByUser(req, res) {
     try {
       const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
-      if (adsByUser.rowsCount === 0){
+      if (!adsByUser){
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
         })
@@ -67,7 +67,7 @@ const adController = {
   async getUserAds(req, res) {
     try {
       const userAds = await adDataMapper.getAllByUser(req.params.user_id);
-      if (userAds.rowsCount === 0){
+      if (!userAds){
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
         })
@@ -87,7 +87,7 @@ const adController = {
   async createUserAd(req, res) {
     try {
       const userAd = await adDataMapper.createUserAd(req.body);
-      if (userAd.rowsCount === 0){
+      if (!userAd){
         return res.status(304).json({
           status: "L'annonce n'a pas pu être crée",
         })
@@ -108,7 +108,7 @@ const adController = {
   async getAllByType(req, res) {
     try {
       const adsByType = await adDataMapper.getAllByType(req.params.type_id);
-      if (adsByType.rowsCount === 0){
+      if (!adsByType){
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce pour ce type.",
         })
@@ -131,7 +131,7 @@ const adController = {
       const ad = await adDataMapper.getOneWithSimilar(req.params.id);
       console.log(ad)
       if (!ad) {
-        return res.status(500).json({message: "no data"});
+        return res.status(500).json({message: "Nous n'avons trouvé aucune annonce."});
       }
       res.json(ad);
     } catch (err) {
@@ -143,7 +143,7 @@ const adController = {
   async getAllByTypeAndCategory(req, res) {
     try {
       const adsByTypeAndCategory = await adDataMapper.getAllByTypeAndCategory(req.params.type_id, req.params.category_id);
-      if (adsByTypeAndCategory.rowsCount === 0){
+      if (!adsByTypeAndCategory){
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce pour ce type et cette catégorie.",
         })
@@ -164,7 +164,7 @@ const adController = {
   async delete(req, res) {
     try {
       const deleteAd = await adDataMapper.delete(req.params.id);
-      if (deleteAd.rowCount === 0) {
+      if (!deleteAd) {
         return res.status(304).json({
           status: "L'annonce n'a pas pu être supprimé",
         });
@@ -184,7 +184,7 @@ const adController = {
   async edit(req, res) {
     try {
       const savedAd = await adDataMapper.edit(req.params.id, req.body);
-      if (savedAd.rowCount === 0) {
+      if (!savedAd) {
         res
           .status(304)
           .json({ message: "Votre annonce n'a pas été modifié." });

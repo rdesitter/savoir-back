@@ -10,7 +10,7 @@ const categoryController = {
   async getAll(_, res) {
     try {
       const categories = await categoryDataMapper.getAll();
-      if (categories.rowsCount === 0) {
+      if (!categories) {
         return res.status(204).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
@@ -30,7 +30,7 @@ const categoryController = {
   async edit(req, res) {
     try {
       const editCategory = await categoryDataMapper.edit(req.params.id);
-      if (editCategory.rowCount === 0) {
+      if (!editCategory) {
         res
           .status(304)
           .json({ message: "Votre categorie n'a pas pu être modifiée." });
@@ -50,7 +50,7 @@ const categoryController = {
   async delete(req, res) {
     try {
       const deleteCategory = await categoryDataMapper.delete(req.params.id);
-      if (deleteCategory.rowsCount !== []) {
+      if (!deleteCategory) {
         return res.status(304).json({
           status: "Votre catégorie n'a pas pu être supprimée",
         });

@@ -129,7 +129,9 @@ const adDataMapper = {
       // SELECT (Le même style de champs de adsOfUser) FROM ad JOIN "user" ON user.id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id WHERE id = $1
       //console.log(resultAd.rowCount);
       if (resultAd.rowCount === 0) {
-        throw new Error("Aucune annonce")
+        return {
+          status: "Nous n'avons trouvé aucune annonce.",
+        };
       } 
       const category = resultAd.rows[0].category_id;
       const resultWithoutID = await client.query(

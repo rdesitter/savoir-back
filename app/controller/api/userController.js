@@ -69,7 +69,7 @@ const userController = {
       );
 
       let newTokens = jwtTokens(newUser.rows[0]);
-      if (newUser.rowCount === 0) {
+      if (!newUser) {
         return res.status(304).json({
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
         });
@@ -90,7 +90,7 @@ const userController = {
   async getUserProfil(req, res) {
     try {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
-      if (getUserProfil.rowsCount === 0) {
+      if (!getUserProfil) {
         return res.status(204).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
@@ -105,7 +105,7 @@ const userController = {
   async delete(req, res) {
     try {
       const deleteUser = await userDataMapper.delete(req.params.id);
-      if (deleteUser.rowCount === 0) {
+      if (!deleteUser) {
         return res.status(304).json({
           status: "utilisateur·ice n'a pas pu être supprimé·e",
         });
@@ -125,7 +125,7 @@ const userController = {
         email,
       ]);
 
-      if (user.rows.length === 0)
+      if (!user)
         return res.status(401).json({
           status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
@@ -162,7 +162,7 @@ const userController = {
         'UPDATE "user" SET password = $2 WHERE email = $1',
         [decode.email, hashedPassword]
       );
-      if (result.rowCount === 0) {
+      if (!result) {
         res
           .status(304)
           .json({ message: "Votre mot de passe n'a pas pu être modifié." });
@@ -176,7 +176,7 @@ const userController = {
   async getAllUsers(_, res) {
     try {
       const users = await userDataMapper.getAllUsers();
-      if (users.rowsCount === 0) {
+      if (!users) {
         return res.status(204).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
@@ -191,7 +191,7 @@ const userController = {
   async edit(req, res) {
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
-      if (savedUser.rowCount === 0) {
+      if (!savedUser) {
         res
           .status(304)
           .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });

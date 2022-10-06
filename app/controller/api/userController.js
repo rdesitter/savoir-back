@@ -18,14 +18,19 @@ const userController = {
     //fetch le user depuis la db basé sur l'email passé en paramètre
     try {
       const { email, password } = req.body;
+      console.log(email, password)
       const user = await client.query(
-        `SELECT "user".id, "user".pseudo, "user".email, "user".password, "user".birthdate, "user".pronoun, "user".firstname, "user".lastname, "user".postal_code, "user".description, "user".picture_id, "user".role_id, "user".created_at, "user".updated_at,
-        picture.name as picture_name, picture.slug as picture_slug
+        `
+        SELECT "user".id, "user".pseudo, "user".email, "user".password, "user".birthdate, "user".pronoun, "user".firstname, "user".lastname, "user".postal_code, "user".description, "user".picture_id, "user".role_id, "user".created_at, "user".updated_at,
+        picture.name AS picture_name, picture.slug AS picture_slug
         FROM "user"
         JOIN picture ON picture.id = "user".picture_id
-        WHERE email = $1`, [
-        email,
-      ]);
+        WHERE email = $1;
+        `, 
+        [email]
+      );
+
+      console.log(user)
 
       if (user.rows.length === 0) {
         return res.status(401).json({ error: "L'email est incorrect" });
@@ -56,6 +61,7 @@ const userController = {
 
   async register(req, res) {
     try {
+      console.log(req.body)
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = await client.query(
         'INSERT INTO "user" (email,password, pseudo ,birthdate, role_id) VALUES ($1,$2,$3,$4,$5) RETURNING *',
@@ -69,6 +75,8 @@ const userController = {
       );
 
       let newTokens = jwtTokens(newUser.rows[0]);
+
+      console.log(newUser)
       if (!newUser) {
         return res.status(304).json({
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
@@ -79,11 +87,12 @@ const userController = {
       //return res.status(204).json({ error: "Email obligatoire" });
       res.json({
         newTokens,
-        newUser: newUser.rows[0].id,
+        newUser: newUser.rows[0],
       });
     } catch (err) {
       debug(err);
-      res.status(500).render(err.toString());
+      console.log(err)
+      // res.status(500).render(err.toString());
     }
   },
 
@@ -162,11 +171,10 @@ const userController = {
         'UPDATE "user" SET password = $2 WHERE email = $1',
         [decode.email, hashedPassword]
       );
-      if (!result) {
-        res
-          .status(304)
-          .json({ message: "Votre mot de passe n'a pas pu être modifié." });
+      if (result.rowCount === 1) {
+        return res.status(200).json({ message: "Votre mot de passe a bien été modifié." });
       }
+      res.status(304).json({ message: "Votre mot de passe n'a pas pu être modifié." });
     } catch (error) {
       debug(error);
       res.status(500).json(err.toString());

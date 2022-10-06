@@ -70,13 +70,11 @@ const userController = {
 
       let newTokens = jwtTokens(newUser.rows[0]);
       if (!newUser) {
-        return res.status(304).json({
+        return res.status(404).json({
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
         });
       }
-      // A verifier avec le front
-      //if (!req.body.email)
-      //return res.status(204).json({ error: "Email obligatoire" });
+  
       res.json({
         newTokens,
         newUser: newUser.rows[0].id,
@@ -91,7 +89,7 @@ const userController = {
     try {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
       if (!getUserProfil) {
-        return res.status(204).json({
+        return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
       }
@@ -106,7 +104,7 @@ const userController = {
     try {
       const deleteUser = await userDataMapper.delete(req.params.id);
       if (!deleteUser) {
-        return res.status(304).json({
+        return res.status(404).json({
           status: "utilisateur·ice n'a pas pu être supprimé·e",
         });
       }
@@ -164,7 +162,7 @@ const userController = {
       );
       if (!result) {
         res
-          .status(304)
+          .status(404)
           .json({ message: "Votre mot de passe n'a pas pu être modifié." });
       }
     } catch (error) {
@@ -177,7 +175,7 @@ const userController = {
     try {
       const users = await userDataMapper.getAllUsers();
       if (!users) {
-        return res.status(204).json({
+        return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
       }
@@ -193,7 +191,7 @@ const userController = {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
       if (!savedUser) {
         res
-          .status(304)
+          .status(404)
           .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
       }
       return res.json(savedUser);

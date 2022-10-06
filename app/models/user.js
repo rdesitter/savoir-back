@@ -6,9 +6,7 @@ const userDataMapper = {
     try {
       const users = await client.query('SELECT * FROM "user"');
       if (users.rowCount === 0) {
-        return {
-          status: "Il n'a aucun·e utilisateur·ice",
-        };
+        throw new Error("Il n'a aucun·e utilisateur·ice");
       }
 
       return {
@@ -47,9 +45,10 @@ const userDataMapper = {
         [id]
       );
       if (resultUser.rowCount === 0) {
-        return {
-          status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
-        };
+        throw new Error("Nous n'avons trouvé aucun profil d'utilisateur·ice.");
+      }
+      if (adsOfUser.rowCount === 0) {
+        throw new Error("Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.");
       }
       return {
         user: resultUser.rows[0],
@@ -78,9 +77,7 @@ const userDataMapper = {
       [...values, id]
     );
     if (savedUser.rowCount === 0) {
-      return {
-        status: "L'utilisateur·ice n'a pas pu être modifié·e",
-      };
+      throw new Error("L'utilisateur·ice n'a pas pu être modifié·e");
     }
     return savedUser.rows[0];
   },
@@ -91,9 +88,7 @@ const userDataMapper = {
         id,
       ]);
       if (result.rowCount === 0) {
-        return {
-          status: "L'utilisateur·ice n'a pas pu être supprimé·e",
-        };
+        throw new Error("L'utilisateur·ice n'a pas pu être supprimé·e");
       }
       return result.rows;
     } catch (err) {
@@ -103,16 +98,16 @@ const userDataMapper = {
 
   async getAllAvatars() {
     try {
-      const results = await client.query('SELECT * FROM picture');
-      console.log(results)
+      const results = await client.query("SELECT * FROM picture");
+      console.log(results);
       if (results.rowCount === 0) {
-        throw new Error('No avatars')
+        throw new Error("No avatars");
       }
       return results.rows;
     } catch (err) {
       debug(err);
     }
-  }
+  },
 };
 
 module.exports = userDataMapper;

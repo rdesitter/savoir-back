@@ -11,7 +11,7 @@ const categoryController = {
     try {
       const categories = await categoryDataMapper.getAll();
       if (!categories) {
-        return res.status(204).json({
+        return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
       }
@@ -32,7 +32,7 @@ const categoryController = {
       const editCategory = await categoryDataMapper.edit(req.params.id);
       if (!editCategory) {
         res
-          .status(304)
+          .status(404)
           .json({ message: "Votre categorie n'a pas pu être modifiée." });
       }
       return res.json(editCategory);
@@ -51,7 +51,7 @@ const categoryController = {
     try {
       const deleteCategory = await categoryDataMapper.delete(req.params.id);
       if (!deleteCategory) {
-        return res.status(304).json({
+        return res.status(404).json({
           status: "Votre catégorie n'a pas pu être supprimée",
         });
       }

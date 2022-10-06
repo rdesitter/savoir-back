@@ -88,7 +88,7 @@ const adController = {
     try {
       const userAd = await adDataMapper.createUserAd(req.body);
       if (!userAd){
-        return res.status(304).json({
+        return res.status(404).json({
           status: "L'annonce n'a pas pu être crée",
         })
       }
@@ -165,7 +165,7 @@ const adController = {
     try {
       const deleteAd = await adDataMapper.delete(req.params.id);
       if (!deleteAd) {
-        return res.status(304).json({
+        return res.status(404).json({
           status: "L'annonce n'a pas pu être supprimé",
         });
       }
@@ -186,7 +186,7 @@ const adController = {
       const savedAd = await adDataMapper.edit(req.params.id, req.body);
       if (!savedAd) {
         res
-          .status(304)
+          .status(404)
           .json({ message: "Votre annonce n'a pas été modifié." });
       }
       return res.json(savedAd);

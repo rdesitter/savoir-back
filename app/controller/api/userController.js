@@ -70,7 +70,7 @@ const userController = {
 
       let newTokens = jwtTokens(newUser.rows[0]);
       if (!newUser) {
-        return res.status(304).json({
+        return res.status(404).json({
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
         });
       }
@@ -91,7 +91,7 @@ const userController = {
     try {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
       if (!getUserProfil) {
-        return res.status(204).json({
+        return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
       }
@@ -106,7 +106,7 @@ const userController = {
     try {
       const deleteUser = await userDataMapper.delete(req.params.id);
       if (!deleteUser) {
-        return res.status(304).json({
+        return res.status(404).json({
           status: "utilisateur·ice n'a pas pu être supprimé·e",
         });
       }
@@ -126,7 +126,7 @@ const userController = {
       ]);
 
       if (!user)
-        return res.status(401).json({
+        return res.status(404).json({
           status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
 
@@ -177,7 +177,7 @@ const userController = {
     try {
       const users = await userDataMapper.getAllUsers();
       if (!users) {
-        return res.status(204).json({
+        return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
         });
       }
@@ -193,10 +193,31 @@ const userController = {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
       if (!savedUser) {
         res
-          .status(304)
+          .status(404)
           .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
       }
-      return res.json(savedUser);
+      const  password  = req.body;
+      //check que le mot de passe du user est correct
+
+    const validPassword = await bcrypt.compare(
+      password,
+      user.rows[0].password
+    );
+
+    if (!validPassword) {
+      return res.status(401).json("Mot de passe incorrect");
+    }
+
+    let tokens = jwtTokens(user.rows[0]);
+    if (!savedUser) {
+      return {
+        status: "L'utilisateur·ice n'a pas pu être modifié·e",
+      };
+    }
+      return res.json({
+        user : savedUser,
+        token : tokens
+      });
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

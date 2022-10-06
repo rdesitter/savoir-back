@@ -10,6 +10,7 @@ INSERT INTO "role"(name) VALUES
 
 
 INSERT INTO "picture" (name, slug) VALUES 
+('null', 'null'),
 ('beard1', 'beard1'),
 ('hijab1', 'hijab1'),
 ('long1', 'long1');

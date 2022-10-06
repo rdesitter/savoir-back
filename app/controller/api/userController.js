@@ -61,7 +61,6 @@ const userController = {
 
   async register(req, res) {
     try {
-      console.log(req.body)
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = await client.query(
         'INSERT INTO "user" (email,password, pseudo ,birthdate, role_id) VALUES ($1,$2,$3,$4,$5) RETURNING *',
@@ -76,7 +75,6 @@ const userController = {
 
       let newTokens = jwtTokens(newUser.rows[0]);
 
-      console.log(newUser)
       if (!newUser) {
         return res.status(404).json({
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
@@ -89,8 +87,11 @@ const userController = {
       });
     } catch (err) {
       debug(err);
-      console.log(err)
-      // res.status(500).render(err.toString());
+      if(err.constraint === 'user_email_key') {
+        return res.status(404).json({ message: "Cet email est déjà utilisé" });
+      } else if (err.constraint === 'user_pseudo_key') {
+        return res.status(404).json({ message: "Ce nom d'utilisateur est déjà utilisé" });
+      }
     }
   },
 

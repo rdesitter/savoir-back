@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS "user"(
     lastname TEXT,
     postal_code zip, --problème création d'une annonce 
     description TEXT,
-    picture_id INT REFERENCES picture(id) ON DELETE CASCADE,
+    picture_id INT REFERENCES picture(id) ON DELETE CASCADE DEFAULT 1,
     role_id INT REFERENCES role(id) ON DELETE CASCADE DEFAULT 2 ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -91,11 +91,6 @@ CREATE TABLE IF NOT EXISTS get(
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (ad_id, label_id)
 );
-
-
-
-
-
 
 
 COMMIT;

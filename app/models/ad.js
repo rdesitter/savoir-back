@@ -46,10 +46,8 @@ const adDataMapper = {
         [category_id]
       );
       if (result.rowCount === 0) {
-        
-        throw new Error ("Nous n'avons trouvé aucune annonce pour cette categorie.")
-        
-      } 
+        throw new Error("Nous n'avons trouvé aucune annonce pour cette categorie.")
+      }
       return result.rows;
     } catch (err) {
       debug(err);

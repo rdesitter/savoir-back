@@ -18,7 +18,12 @@ const userController = {
     //fetch le user depuis la db basé sur l'email passé en paramètre
     try {
       const { email, password } = req.body;
-      const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
+      const user = await client.query(
+        `SELECT "user".id, "user".pseudo, "user".email, "user".password, "user".birthdate, "user".pronoun, "user".firstname, "user".lastname, "user".postal_code, "user".description, "user".picture_id, "user".role_id, "user".created_at, "user".updated_at,
+        picture.name as picture_name, picture.slug as picture_slug
+        FROM "user"
+        JOIN picture ON picture.id = "user".picture_id
+        WHERE email = $1`, [
         email,
       ]);
 
@@ -40,7 +45,7 @@ const userController = {
       let tokens = jwtTokens(user.rows[0]);
 
       res.json({
-        user: user.rows,
+        user: user.rows[0],
         tokens,
       });
     } catch (err) {

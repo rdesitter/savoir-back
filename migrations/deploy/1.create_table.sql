@@ -93,9 +93,4 @@ CREATE TABLE IF NOT EXISTS get(
 );
 
 
-
-
-
-
-
 COMMIT;

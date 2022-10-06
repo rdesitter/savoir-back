@@ -100,6 +100,19 @@ const userDataMapper = {
       debug(err);
     }
   },
+
+  async getAllAvatars() {
+    try {
+      const results = await client.query('SELECT * FROM picture');
+      console.log(results)
+      if (results.rowCount === 0) {
+        throw new Error('No avatars')
+      }
+      return results.rows;
+    } catch (err) {
+      debug(err);
+    }
+  }
 };
 
 module.exports = userDataMapper;

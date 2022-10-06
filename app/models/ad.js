@@ -43,17 +43,8 @@ const adDataMapper = {
         [category_id]
       );
       if (result.rowCount === 0) {
-        return {
-<<<<<<< HEAD
-          status : 500,
-          message: "Aucune annonce trouvée",
-        }
+        throw new Error("Nous n'avons trouvé aucune annonce pour cette categorie.")
       }
-=======
-          status: "Nous n'avons trouvé aucune annonce pour cette categorie.",
-        };
-      } 
->>>>>>> 8e7b4657d39cbdd45afc77746461d2021a9c1213
       return result.rows;
     } catch (err) {
       debug(err);

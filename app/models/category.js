@@ -15,6 +15,9 @@ const categoryDataMapper = {
           FROM category
         `
       );
+      if(result.rowCount === 0){
+        throw new Error("Il n'y a aucune categorie.")
+      }
       return result.rows;
     } catch (err) {
       debug(err);
@@ -36,9 +39,7 @@ const categoryDataMapper = {
         id,
       ]);
       if (result.rowCount === 0) {
-        return {
-          status: "La catégorie n'a pas pu être supprimée",
-        };
+        throw new Error("La catégorie n'a pas pu être supprimée");
       }
       return result.rows;
     } catch (err) {

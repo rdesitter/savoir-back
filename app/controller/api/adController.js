@@ -10,7 +10,7 @@ const adController = {
   async getAll(_, res) {
     try {
       const ads = await adDataMapper.getAll();
-      if (ads.rowsCount === 0){
+      if (!ads){
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce.",
         })

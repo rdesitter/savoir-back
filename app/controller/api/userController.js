@@ -113,10 +113,11 @@ const userController = {
 
   async delete(req, res) {
     try {
-      const deleteUser = await userDataMapper.delete(req.params.id);
+      const decode = authorizationMiddleware(req.headers.authorization);
+      const deleteUser = await userDataMapper.delete(decode.id);
       if (!deleteUser) {
         return res.status(404).json({
-          status: "utilisateur·ice n'a pas pu être supprimé·e",
+          status: "L'utilisateur·ice n'a pas pu être supprimé·e",
         });
       }
       return res.json(deleteUser);

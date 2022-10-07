@@ -93,7 +93,7 @@ const userDataMapper = {
       if (result.rowCount === 0) {
         throw new Error("L'utilisateur·ice n'a pas pu être supprimé·e");
       }
-      return result.rows;
+      return {message : "L'utilisateur·ice a bien été supprimé·e"};
     } catch (err) {
       debug(err);
     }

@@ -88,7 +88,7 @@ const adController = {
     try {
       const userAd = await adDataMapper.createUserAd(req.body);
       if (!userAd){
-        return res.status(304).json({
+        return res.status(404).json({
           status: "L'annonce n'a pas pu être crée",
         })
       }

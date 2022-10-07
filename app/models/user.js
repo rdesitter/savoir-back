@@ -47,12 +47,6 @@ const userDataMapper = {
       if (resultUser.rowCount === 0) {
         throw new Error("Nous n'avons trouvé aucun profil d'utilisateur·ice.");
       }
-      
-      if(adsOfUser.rowCount === 0){
-        return {
-          user: resultUser.rows[0]
-        }
-      }
       return {
         user: resultUser.rows[0],
         adsOfUser: adsOfUser.rows,
@@ -63,26 +57,34 @@ const userDataMapper = {
   },
 
   async edit(id, user) {
-    const fields = Object.keys(user).map(
-      (prop, index) => `"${prop}" = $${index + 1}`
-    );
-    debug(fields);
-    const values = Object.values(user);
-    debug(values);
+    try {
+      const fields = Object.keys(user).map(
+        (prop, index) => `"${prop}" = $${index + 1}`
+      );
+      debug(fields);
+      const values = Object.values(user);
+      debug(values);
 
-    const savedUser = await client.query(
-      `
-                UPDATE "user" SET
-                    ${fields}
-                WHERE id = $${fields.length + 1}
-                RETURNING *
-            `,
-      [...values, id]
-    );
-    if (savedUser.rowCount === 0) {
+
+      const savedUser = await client.query(
+        `
+                  UPDATE "user" SET
+                      ${fields}
+                  WHERE id = $${fields.length + 1}
+                  RETURNING *
+              `,
+        [...values, id]
+      );
+       if (savedUser.rowCount === 0) {
       throw new Error("L'utilisateur·ice n'a pas pu être modifié·e");
+      return {
+        user: savedUser.rows[0],
+      };
+    } catch (error) {
+      debug(error);
+
     }
-    return savedUser.rows[0];
+
   },
 
   async delete(id) {

@@ -15,8 +15,10 @@ const categoryDataMapper = {
           FROM category
         `
       );
-      if(result.rowCount === 0){
-        throw new Error("Il n'y a aucune categorie.")
+
+      if (result.rowCount === 0) {
+        throw new Error("Il n'y a pas de categorie");
+
       }
       return result.rows;
     } catch (err) {

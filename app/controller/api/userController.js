@@ -1,8 +1,7 @@
 const userDataMapper = require("../../models/user");
 const debug = require("debug")("app:Debug");
 const {
-  jwtTokens,
-  authorizationMiddleware,
+  generateAccessToken,
 } = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
@@ -47,7 +46,7 @@ const userController = {
         return res.status(401).json("Mot de passe incorrect");
       }
 
-      let tokens = jwtTokens(user.rows[0]);
+      let tokens = generateAccessToken(user.rows[0]);
 
       res.json({
         user: user.rows[0],
@@ -73,7 +72,7 @@ const userController = {
         ]
       );
 
-      let newTokens = jwtTokens(newUser.rows[0]);
+      let newTokens = generateAccessToken(newUser.rows[0]);
 
       if (!newUser) {
         return res.status(404).json({
@@ -87,11 +86,9 @@ const userController = {
       });
     } catch (err) {
       debug(err);
-      if(err.constraint === 'user_email_key') {
-        return res.status(404).json({ message: "Cet email est déjà utilisé" });
-      } else if (err.constraint === 'user_pseudo_key') {
-        return res.status(404).json({ message: "Ce nom d'utilisateur est déjà utilisé" });
-      }
+
+      res.status(500).json(err.toString());
+
     }
   },
 
@@ -117,7 +114,9 @@ const userController = {
       const deleteUser = await userDataMapper.delete(decode.id);
       if (!deleteUser) {
         return res.status(404).json({
+
           status: "L'utilisateur·ice n'a pas pu être supprimé·e",
+
         });
       }
       return res.json(deleteUser);
@@ -136,11 +135,11 @@ const userController = {
       ]);
 
       if (!user)
-        return res.status(401).json({
+        return res.status(404).json({
           status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
 
-      let newTokens = jwtTokens(user.rows[0]);
+      let newTokens = generateAccessToken(user.rows[0]);
 
       contactEmail.sendMail(
         resetPasswordEmail(email, newTokens.accessToken),
@@ -166,11 +165,11 @@ const userController = {
 
   async setNewPassword(req, res) {
     try {
+      const { email } = req.body
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      const decode = authorizationMiddleware(req.headers.authorization);
       const result = await client.query(
         'UPDATE "user" SET password = $2 WHERE email = $1',
-        [decode.email, hashedPassword]
+        [email, hashedPassword]
       );
 
       if (result.rowCount === 1) {
@@ -178,8 +177,10 @@ const userController = {
       }
 
       res.status(304).json({ message: "Votre mot de passe n'a pas pu être modifié." });
-    } catch (error) {
-      debug(error);
+    } catch (err) {
+      debug(err);
+      res.status(500).json(err.toString());
+
     }
   },
 
@@ -201,13 +202,17 @@ const userController = {
   async edit(req, res) {
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
+   
+ 
       if (!savedUser) {
         res
           .status(404)
           .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
       }
-      const token = jwtTokens(savedUser);
-      return res.json({ user: savedUser, token });
+
+      return res.json(savedUser);
+     
+
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -242,6 +247,7 @@ const userController = {
       res.status(200).json(avatars)
     } catch (err) {
       debug(err);
+      res.status(500).json(err.toString());
     }
   },
 };

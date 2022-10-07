@@ -1,7 +1,7 @@
 const express = require("express");
 const categoryController = require("../controller/api/categoryController");
 const router = express.Router();
-
+const { authenticateToken } = require("../utils/jwt-helpers");
 
 /**
  * @api {get} /api/categories All
@@ -26,7 +26,7 @@ router.get("/api/categories",categoryController.getAll);
  * 
  * @apiSuccess {Object} returns update ad
  */
-router.patch("/api/categories/:id",categoryController.edit)
+router.patch("/api/categories/:id",authenticateToken,categoryController.edit)
 /**
  * @api {delete} /api/categories/:id Delete one categories
  * @apiName deleteCategory
@@ -41,7 +41,7 @@ router.patch("/api/categories/:id",categoryController.edit)
         "id": "mettre un exemple"
       }
  */
-router.delete("/api/categories/:id",categoryController.delete)
+router.delete("/api/categories/:id",authenticateToken,categoryController.delete)
 
 //! route pour créer une category en admin (benoit)
 

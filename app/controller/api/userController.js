@@ -1,8 +1,6 @@
 const userDataMapper = require("../../models/user");
 const debug = require("debug")("app:Debug");
-const {
-  generateAccessToken,
-} = require("../../utils/jwt-helpers");
+const { generateAccessToken } = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const client = require("../../config/db");
@@ -17,7 +15,7 @@ const userController = {
     //fetch le user depuis la db basé sur l'email passé en paramètre
     try {
       const { email, password } = req.body;
-      console.log(email, password)
+      //console.log(email, password);
       const user = await client.query(
         `
         SELECT "user".id, "user".pseudo, "user".email, "user".password, "user".birthdate, "user".pronoun, "user".firstname, "user".lastname, "user".postal_code, "user".description, "user".picture_id, "user".role_id, "user".created_at, "user".updated_at,
@@ -25,11 +23,11 @@ const userController = {
         FROM "user"
         JOIN picture ON picture.id = "user".picture_id
         WHERE email = $1;
-        `, 
+        `,
         [email]
       );
 
-      console.log(user)
+      //console.log(user);
 
       if (user.rows.length === 0) {
         return res.status(401).json({ error: "L'email est incorrect" });
@@ -79,7 +77,7 @@ const userController = {
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
         });
       }
-  
+
       res.json({
         newTokens,
         newUser: newUser.rows[0],
@@ -88,14 +86,13 @@ const userController = {
       debug(err);
 
       res.status(500).json(err.toString());
-
     }
   },
 
   async getUserProfil(req, res) {
     try {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
-      
+
       if (!getUserProfil) {
         return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
@@ -110,13 +107,11 @@ const userController = {
 
   async delete(req, res) {
     try {
-      const decode = authorizationMiddleware(req.headers.authorization);
+      //const decode = authorizationMiddleware(req.headers.authorization);
       const deleteUser = await userDataMapper.delete(decode.id);
       if (!deleteUser) {
         return res.status(404).json({
-
           status: "L'utilisateur·ice n'a pas pu être supprimé·e",
-
         });
       }
       return res.json(deleteUser);
@@ -165,7 +160,7 @@ const userController = {
 
   async setNewPassword(req, res) {
     try {
-      const { email } = req.body
+      const { email } = req.body;
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const result = await client.query(
         'UPDATE "user" SET password = $2 WHERE email = $1',
@@ -173,14 +168,17 @@ const userController = {
       );
 
       if (result.rowCount === 1) {
-        return res.status(200).json({ message: "Votre mot de passe a bien été modifié." });
+        return res
+          .status(200)
+          .json({ message: "Votre mot de passe a bien été modifié." });
       }
 
-      res.status(304).json({ message: "Votre mot de passe n'a pas pu être modifié." });
+      res
+        .status(304)
+        .json({ message: "Votre mot de passe n'a pas pu être modifié." });
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
-
     }
   },
 
@@ -202,8 +200,7 @@ const userController = {
   async edit(req, res) {
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
-   
- 
+
       if (!savedUser) {
         res
           .status(404)
@@ -211,8 +208,6 @@ const userController = {
       }
 
       return res.json(savedUser);
-     
-
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -243,8 +238,9 @@ const userController = {
   async getAllAvatars(req, res) {
     try {
       const avatars = await userDataMapper.getAllAvatars();
-      if (!avatars) return res.status(404).json({message: "Pas d'avatars disponibles."})
-      res.status(200).json(avatars)
+      if (!avatars)
+        return res.status(404).json({ message: "Pas d'avatars disponibles." });
+      res.status(200).json(avatars);
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

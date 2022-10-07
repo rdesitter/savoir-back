@@ -16,12 +16,11 @@ function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader 
 
-  if (token == null){
-   return res.status(401);
-  }
+  if (token == null) return res.sendStatus(401)
+  
    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err){
-     return res.status(401);
+     return res.sendStatus(401);
    }
    req.user = user;
    next();

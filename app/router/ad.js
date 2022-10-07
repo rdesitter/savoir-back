@@ -1,7 +1,7 @@
 const express = require("express");
 const adController = require("../controller/api/adController");
 const router = express.Router();
-
+const { authenticateToken } = require("../utils/jwt-helpers");
 /**
  * @api {get} /api/annonces All
  * @apiName GetAll
@@ -217,7 +217,7 @@ router.get("/api/users/annonces/:user_id", adController.getUserAds)
         "id": "mettre un exemple"
       },
  */
-router.post("/api/users/create-annonces",adController.createUserAd);
+router.post("/api/users/create-annonces",authenticateToken,adController.createUserAd);
 /**
  * @api {patch} /api/annonces/:id Update
  * @apiName Edit
@@ -228,7 +228,7 @@ router.post("/api/users/create-annonces",adController.createUserAd);
  * 
  * @apiSuccess {Object} returns update ad
  */
-router.patch("/api/annonces/:id",adController.edit)
+router.patch("/api/annonces/:id",authenticateToken,adController.edit)
  /**
  * @api {delete} /api/annonces/:id Delete
  * @apiName Delete
@@ -243,7 +243,7 @@ router.patch("/api/annonces/:id",adController.edit)
         "id": "mettre un exemple"
       },
  */
-router.delete("/api/annonces/:id",adController.delete)
+router.delete("/api/annonces/:id",authenticateToken,adController.delete)
 
 
 

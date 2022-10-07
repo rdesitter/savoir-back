@@ -1,7 +1,5 @@
 const client = require("../config/db");
 const debug = require("debug")("app:Debug");
-const { authorizationMiddleware, generateAccessToken, generateRefreshToken } = require("../utils/jwt-helpers");
-const bcrypt = require("bcrypt");
 
 const userDataMapper = {
   async getAllUsers() {
@@ -59,29 +57,30 @@ const userDataMapper = {
   },
 
   async edit(id, user) {
-    const fields = Object.keys(user).map(
-      (prop, index) => `"${prop}" = $${index + 1}`
-    );
-    debug(fields);
-    const values = Object.values(user);
-    debug(values);
-    
-    const savedUser = await client.query(
-      `
-                UPDATE "user" SET
-                    ${fields}
-                WHERE id = $${fields.length + 1}
-                RETURNING *
-            `,
-      [...values, id]
-    );
-    const token = generateAccessToken(savedUser)
-    //debug(savedUser);
-    return {
-      user: savedUser.rows[0],
-      token,
-    };
-    // ajouter try catch
+    try {
+      const fields = Object.keys(user).map(
+        (prop, index) => `"${prop}" = $${index + 1}`
+      );
+      debug(fields);
+      const values = Object.values(user);
+      debug(values);
+
+      const savedUser = await client.query(
+        `
+                  UPDATE "user" SET
+                      ${fields}
+                  WHERE id = $${fields.length + 1}
+                  RETURNING *
+              `,
+        [...values, id]
+      );
+      return {
+        user: savedUser.rows[0],
+      };
+    } catch (error) {
+      debug(error);
+    }
+
   },
 
   async delete(id) {
@@ -110,8 +109,6 @@ const userDataMapper = {
       debug(err);
     }
   },
-
-
 };
 
 module.exports = userDataMapper;

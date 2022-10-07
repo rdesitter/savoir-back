@@ -1,7 +1,6 @@
 const userDataMapper = require("../../models/user");
 const debug = require("debug")("app:Debug");
 const {
-  authorizationMiddleware,
   generateAccessToken,
 } = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
@@ -156,20 +155,21 @@ const userController = {
 
   async setNewPassword(req, res) {
     try {
+      const { email } = req.body
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      const decode = authorizationMiddleware(req.headers.authorization);
       const result = await client.query(
         'UPDATE "user" SET password = $2 WHERE email = $1',
-        [decode.email, hashedPassword]
+        [email, hashedPassword]
       );
 
       if (result.rowCount === 1) {
         return res.status(200).json({ message: "Votre mot de passe a bien été modifié." });
       }
 
-      res.status(404).json({ message: "Votre mot de passe n'a pas pu être modifié." });
-    } catch (error) {
-      debug(error);
+      res.status(304).json({ message: "Votre mot de passe n'a pas pu être modifié." });
+    } catch (err) {
+      debug(err);
+      res.status(500).json(err.toString());
     }
   },
 
@@ -234,6 +234,7 @@ const userController = {
       res.status(200).json(avatars)
     } catch (err) {
       debug(err);
+      res.status(500).json(err.toString());
     }
   },
 };

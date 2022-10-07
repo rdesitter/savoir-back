@@ -18,7 +18,7 @@ INSERT INTO "picture" (name, slug) VALUES
 ('LONG1', 'long-1'),
 ('LONG2', 'long-2'),
 ('LONG3', 'long-3'),
-('NOHAIR1', 'nohair-1'),
+('nohair1', 'nohair-1'),
 ('NOHAIR2', 'nohair-2'),
 ('NOHAIR3', 'nohair-3'),
 ('NULL', 'null'),
@@ -50,29 +50,29 @@ INSERT INTO "condition" (name) VALUES
 ('Distanciel');
 
 INSERT INTO "category" (name, slug, created_at, updated_at) VALUES
-('Administration', 'administration', now(), now()),
-('Aide-educative', 'aide-educative', now(), now()),
-('Animaux', 'animaux', now(), now()),
-('Arts-travaux', 'arts-travaux', now(), now()),
-('Bien-etre', 'bien-etre', now(), now()),
-('Cuisine', 'cuisine', now(), now()),
-('Decouverte-metier', 'decouverte-metier', now(), now()),
-('Informatique', 'informatique', now(), now()),
-('Jardin', 'jardin', now(), now()),
-('Langues', 'langues', now(), now()),
-('Partage-culturel', 'partage-culturel', now(), now()),
-('Reparation-bricolage', 'reparation-bricolage', now(), now()),
-('Sport', 'sport', now(), now());
+('administration', 'administration', now(), now()),
+('aide-educative', 'aide-educative', now(), now()),
+('animaux', 'animaux', now(), now()),
+('arts-travaux', 'arts-travaux', now(), now()),
+('bien-etre', 'bien-etre', now(), now()),
+('cuisine', 'cuisine', now(), now()),
+('decouverte-metier', 'decouverte-metier', now(), now()),
+('informatique', 'informatique', now(), now()),
+('jardin', 'jardin', now(), now()),
+('langues', 'langues', now(), now()),
+('partage-culturel', 'partage-culturel', now(), now()),
+('reparation-bricolage', 'reparation-bricolage', now(), now()),
+('sport', 'sport', now(), now());
 
 INSERT INTO "ad" (title, postal_code, image, description, user_id, condition_id, type_id, category_id, created_at, updated_at) VALUES
 --RECHERCHE
-('Initiation au théâtre (d impro, ou pas !)', '13000', 'arts-travaux', 'Bonjour, Très timide, je cherche un groupe de théâtre bienveillant pour apprendre à gérer mon angoisse de parler en public et gagner en assurance :) Je suis fasciné par le théâtre impro, alors un groupe de ce type serait un plus !)', 1, 1, 1, 4, now(), now()),
+('Initiation au théâtre d impro, ou pas !)', '13000', 'arts-travaux', 'Bonjour, Très timide, je cherche un groupe de théâtre bienveillant pour apprendre à gérer mon angoisse de parler en public et gagner en assurance :) Je suis fasciné par le théâtre impro, alors un groupe de ce type serait un plus !)', 1, 1, 1, 4, now(), now()),
 
 ('Balade avec les toutous !', '33000', 'animaux', 'Bonjour bonjour ! Si ça en tente certains·es, nous pourrions promener nos loulous ensemble, le dimanche matin ! Je vous propose de nous retrouver dans le parc à chien du Jardin Public. Ensite, nous pourrions nous balader le long de la Garonne :)', 2, 1, 1, 3, now(), now()),
 
 ('Gimp', '34000', 'informatique', 'J’aimerais apprendre à me servir du logiciel Gimp. Je suis totalement débutant mais j’ai déjà installé le logiciel (je suis sur Ibook). J’aimerais organiser ça dans un café ou un bar, j’offre la première consommation ! Pour info, j’ai de bonnes notions Photoshop. Ca serait sympa de profiter du beau temps pour organiser ça :)', 3, 1, 1, 8, now(), now()),
 
-('Si la Bourse n’a plus de secret pour vous…', '01000', 'Administration', 'Bonjour ! Très intéressé par le milieu boursier, j’aimerais parfaire mes connaissances dans le domaine. Si j’ai quelques notions, du vocabulaire, etc, je peine encore à bien comprendre ses mécanismes et adorerait pouvoir bénéficier de vos lumières sur le sujet. Papoter avec une personne ayant bossé chez Euronex et pouvant me raconter les coulisses serait un rêve !', 4, 2, 1, 1, now(), now()),
+('Si la Bourse n’a plus de secret pour vous…', '01000', 'administration', 'Bonjour ! Très intéressé par le milieu boursier, j’aimerais parfaire mes connaissances dans le domaine. Si j’ai quelques notions, du vocabulaire, etc, je peine encore à bien comprendre ses mécanismes et adorerait pouvoir bénéficier de vos lumières sur le sujet. Papoter avec une personne ayant bossé chez Euronex et pouvant me raconter les coulisses serait un rêve !', 4, 2, 1, 1, now(), now()),
 
 ('Langue des signes', '01000', 'langues', 'Bonjour. J’aimerais offrir un cadeau un peu spécial à ma tante pour Noël. Elle est malentendante et j’adorerais pouvoir apprendre les bases du langage des signes pour papoter avec elle le 25 décembre :) Pourriez-vous m’aider ? Je peux me déplacer sur Paris mais je préfèrerais en distanciel.', 5, 2, 1, 10, now(), now()),
 
@@ -89,7 +89,7 @@ INSERT INTO "ad" (title, postal_code, image, description, user_id, condition_id,
 
 ('Nems \o/', '01000', 'cuisine', 'Bonjour. J adore les nems (surtout végés !) mais je ne sais absolument pas les cuisiner... et encore moins les rouler ! Est-ce qu une bonne âme saurait m apprendre ??', 2, 1, 1, 6, now(), now()),
 
-('Soutien scolaire, physique/chimie', '17600', 'aide-educative', 'Elève en classe de 5ème, la physique et la chimie me posent beaucoup de problème. Est-ce qu une personne pourrait m aider à me remettre à niveau ?', 3, 2, 1, 2, now(), now()),
+('Soutien scolaire, physique/chimie', '17600', 'Aide-educative', 'Elève en classe de 5ème, la physique et la chimie me posent beaucoup de problème. Est-ce qu une personne pourrait m aider à me remettre à niveau ?', 3, 2, 1, 2, now(), now()),
 
 --PORPOSE
 

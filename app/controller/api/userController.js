@@ -204,7 +204,8 @@ const userController = {
           .status(404)
           .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
       }
-      return res.json(savedUser);
+      const token = jwtTokens(savedUser);
+      return res.json({ user: savedUser, token });
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

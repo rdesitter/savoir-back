@@ -17,14 +17,19 @@ const userController = {
     //fetch le user depuis la db basé sur l'email passé en paramètre
     try {
       const { email, password } = req.body;
+      console.log(email, password)
       const user = await client.query(
-        `SELECT "user".id, "user".pseudo, "user".email, "user".password, "user".birthdate, "user".pronoun, "user".firstname, "user".lastname, "user".postal_code, "user".description, "user".picture_id, "user".role_id, "user".created_at, "user".updated_at,
-        picture.name as picture_name, picture.slug as picture_slug
+        `
+        SELECT "user".id, "user".pseudo, "user".email, "user".password, "user".birthdate, "user".pronoun, "user".firstname, "user".lastname, "user".postal_code, "user".description, "user".picture_id, "user".role_id, "user".created_at, "user".updated_at,
+        picture.name AS picture_name, picture.slug AS picture_slug
         FROM "user"
         JOIN picture ON picture.id = "user".picture_id
-        WHERE email = $1`, [
-        email,
-      ]);
+        WHERE email = $1;
+        `, 
+        [email]
+      );
+
+      console.log(user)
 
       if (user.rows.length === 0) {
         return res.status(401).json({ error: "L'email est incorrect" });
@@ -68,27 +73,29 @@ const userController = {
       );
 
       let newTokens = generateAccessToken(newUser.rows[0]);
+
       if (!newUser) {
         return res.status(404).json({
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
         });
       }
-      // A verifier avec le front
-      //if (!req.body.email)
-      //return res.status(204).json({ error: "Email obligatoire" });
+  
       res.json({
         newTokens,
-        newUser: newUser.rows[0].id,
+        newUser: newUser.rows[0],
       });
     } catch (err) {
       debug(err);
+
       res.status(500).json(err.toString());
+
     }
   },
 
   async getUserProfil(req, res) {
     try {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
+      
       if (!getUserProfil) {
         return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",
@@ -103,10 +110,13 @@ const userController = {
 
   async delete(req, res) {
     try {
-      const deleteUser = await userDataMapper.delete(req.params.id);
+      const decode = authorizationMiddleware(req.headers.authorization);
+      const deleteUser = await userDataMapper.delete(decode.id);
       if (!deleteUser) {
         return res.status(404).json({
-          status: "utilisateur·ice n'a pas pu être supprimé·e",
+
+          status: "L'utilisateur·ice n'a pas pu être supprimé·e",
+
         });
       }
       return res.json(deleteUser);
@@ -170,6 +180,7 @@ const userController = {
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
+
     }
   },
 
@@ -198,8 +209,10 @@ const userController = {
           .status(404)
           .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
       }
+
       return res.json(savedUser);
      
+
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

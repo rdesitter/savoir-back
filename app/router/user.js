@@ -13,7 +13,9 @@ router.post("/api/login", userController.login);
 router.delete("/api/user/:id",authenticateToken,userController.delete);
 
 router.post("/api/resetpassword", userController.resetPassword);
+
 router.post("/api/contact", userController.contactForm);
+
 
 router.patch("/api/newpassword", userController.setNewPassword);
 

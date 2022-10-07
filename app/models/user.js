@@ -65,6 +65,7 @@ const userDataMapper = {
       const values = Object.values(user);
       debug(values);
 
+
       const savedUser = await client.query(
         `
                   UPDATE "user" SET
@@ -74,11 +75,14 @@ const userDataMapper = {
               `,
         [...values, id]
       );
+       if (savedUser.rowCount === 0) {
+      throw new Error("L'utilisateur·ice n'a pas pu être modifié·e");
       return {
         user: savedUser.rows[0],
       };
     } catch (error) {
       debug(error);
+
     }
 
   },
@@ -91,7 +95,7 @@ const userDataMapper = {
       if (result.rowCount === 0) {
         throw new Error("L'utilisateur·ice n'a pas pu être supprimé·e");
       }
-      return result.rows;
+      return {message : "L'utilisateur·ice a bien été supprimé·e"};
     } catch (err) {
       debug(err);
     }

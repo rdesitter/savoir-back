@@ -92,6 +92,7 @@ const adController = {
           status: "L'annonce n'a pas pu être crée",
         })
       }
+      debug(userAd)
       return res.json(userAd);
 
     } catch (err) {

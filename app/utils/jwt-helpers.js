@@ -13,10 +13,10 @@ function generateAccessToken({ email,password, pseudo ,birthdate, role_id }) {
 // }
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.header['authorization'];
+  const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token){
+  if (token == null){
    return res.status(401);
   }
    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -26,7 +26,9 @@ function authenticateToken(req, res, next) {
    req.user = user;
    next();
    });
-  
+   
+   
   }
+ 
 
 module.exports = {generateAccessToken, authenticateToken};

@@ -106,7 +106,7 @@ const userDataMapper = {
   async getAllAvatars() {
     try {
       const results = await client.query("SELECT * FROM picture");
-      console.log(results);
+      //console.log(results);
       if (results.rowCount === 0) {
         throw new Error("No avatars");
       }

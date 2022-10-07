@@ -14,7 +14,7 @@ function generateAccessToken({ email,password, pseudo ,birthdate, role_id }) {
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader 
 
   if (token == null){
    return res.status(401);

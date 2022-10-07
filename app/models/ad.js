@@ -140,8 +140,14 @@ const adDataMapper = {
         SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
         category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
         condition.id AS condition_id, condition.name AS condition_name,
-        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug FROM ad JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
-        WHERE "user".id != $1
+        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+        FROM ad 
+        JOIN "user" ON "user".id = ad.user_id 
+        JOIN category ON category.id = ad.category_id 
+        JOIN condition ON condition.id = ad.condition_id 
+        JOIN type ON type.id = ad.type_id 
+        JOIN picture ON picture.id = "user".picture_id
+        WHERE ad.id != $1
         ORDER BY created_at DESC
         `,
         [id]

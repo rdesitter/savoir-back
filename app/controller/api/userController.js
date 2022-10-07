@@ -98,6 +98,7 @@ const userController = {
   async getUserProfil(req, res) {
     try {
       const getUserProfil = await userDataMapper.getUserProfil(req.params.id);
+      
       if (!getUserProfil) {
         return res.status(404).json({
           status: "Nous n'avons trouvé aucun profil d'utilisateur·ice.",

@@ -47,8 +47,11 @@ const userDataMapper = {
       if (resultUser.rowCount === 0) {
         throw new Error("Nous n'avons trouvé aucun profil d'utilisateur·ice.");
       }
-      if (adsOfUser.rowCount === 0) {
-        throw new Error("Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.");
+      
+      if(adsOfUser.rowCount === 0){
+        return {
+          user: resultUser.rows[0]
+        }
       }
       return {
         user: resultUser.rows[0],

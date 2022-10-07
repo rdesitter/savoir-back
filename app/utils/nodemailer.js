@@ -28,7 +28,7 @@ const resetPasswordEmail =  (email, token) => {
            <p>Sinon, voici un lien vous permettant de réinitiliser votre mot de passe :
            <a href='${process.env.URL}/nouveau-mot-de-passe?${token}'>Réinitisaliser mon mot de passe.</a></p>
            <p>Si ce lien ne fonctionne pas vous pouvez coller cette adresse dans votre navigateur : <br />
-           ${process.env.URL}nouveau-mot-de-passe?${token}</p>`,
+           ${process.env.URL}/nouveau-mot-de-passe?${token}</p>`,
     }
 };
 

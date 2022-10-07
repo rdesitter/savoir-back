@@ -1,6 +1,6 @@
 const client = require("../config/db");
 const debug = require("debug")("app:Debug");
-const { jwtTokens, authorizationMiddleware } = require("../utils/jwt-helpers");
+const { authorizationMiddleware, generateAccessToken, generateRefreshToken } = require("../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 
 const userDataMapper = {
@@ -65,7 +65,7 @@ const userDataMapper = {
     debug(fields);
     const values = Object.values(user);
     debug(values);
-    let tokens = jwtTokens(user.rows);
+    
     const savedUser = await client.query(
       `
                 UPDATE "user" SET
@@ -75,8 +75,12 @@ const userDataMapper = {
             `,
       [...values, id]
     );
-    debug(savedUser);
-    return { user: savedUser.rows, tokens };
+    const token = generateAccessToken(savedUser)
+    //debug(savedUser);
+    return {
+      user: savedUser.rows[0],
+      token,
+    };
     // ajouter try catch
   },
 
@@ -106,6 +110,8 @@ const userDataMapper = {
       debug(err);
     }
   },
+
+
 };
 
 module.exports = userDataMapper;

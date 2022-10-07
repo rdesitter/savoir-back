@@ -1,8 +1,8 @@
 const userDataMapper = require("../../models/user");
 const debug = require("debug")("app:Debug");
 const {
-  jwtTokens,
   authorizationMiddleware,
+  generateAccessToken,
 } = require("../../utils/jwt-helpers");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
@@ -42,7 +42,7 @@ const userController = {
         return res.status(401).json("Mot de passe incorrect");
       }
 
-      let tokens = jwtTokens(user.rows[0]);
+      let tokens = generateAccessToken(user.rows[0]);
 
       res.json({
         user: user.rows[0],
@@ -68,7 +68,7 @@ const userController = {
         ]
       );
 
-      let newTokens = jwtTokens(newUser.rows[0]);
+      let newTokens = generateAccessToken(newUser.rows[0]);
       if (!newUser) {
         return res.status(404).json({
           status: "L'utilisateur·ice n'a pas pu être ajouté·e",
@@ -83,7 +83,7 @@ const userController = {
       });
     } catch (err) {
       debug(err);
-      res.status(500).render(err.toString());
+      res.status(500).json(err.toString());
     }
   },
 
@@ -130,7 +130,7 @@ const userController = {
           status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
 
-      let newTokens = jwtTokens(user.rows[0]);
+      let newTokens = generateAccessToken(user.rows[0]);
 
       contactEmail.sendMail(
         resetPasswordEmail(email, newTokens.accessToken),
@@ -162,14 +162,14 @@ const userController = {
         'UPDATE "user" SET password = $2 WHERE email = $1',
         [decode.email, hashedPassword]
       );
-      if (!result) {
-        res
-          .status(304)
-          .json({ message: "Votre mot de passe n'a pas pu être modifié." });
+
+      if (result.rowCount === 1) {
+        return res.status(200).json({ message: "Votre mot de passe a bien été modifié." });
       }
+
+      res.status(404).json({ message: "Votre mot de passe n'a pas pu être modifié." });
     } catch (error) {
       debug(error);
-      res.status(500).json(err.toString());
     }
   },
 
@@ -191,33 +191,15 @@ const userController = {
   async edit(req, res) {
     try {
       const savedUser = await userDataMapper.edit(req.params.id, req.body);
+   
+ 
       if (!savedUser) {
         res
           .status(404)
           .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
       }
-      const  password  = req.body;
-      //check que le mot de passe du user est correct
-
-    const validPassword = await bcrypt.compare(
-      password,
-      user.rows[0].password
-    );
-
-    if (!validPassword) {
-      return res.status(401).json("Mot de passe incorrect");
-    }
-
-    let tokens = jwtTokens(user.rows[0]);
-    if (!savedUser) {
-      return {
-        status: "L'utilisateur·ice n'a pas pu être modifié·e",
-      };
-    }
-      return res.json({
-        user : savedUser,
-        token : tokens
-      });
+      return res.json(savedUser);
+     
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

@@ -84,8 +84,7 @@ const userController = {
       });
     } catch (err) {
       debug(err);
-
-      res.status(500).json(err.toString());
+      res.status(500).json(err);
     }
   },
 

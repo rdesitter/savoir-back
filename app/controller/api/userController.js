@@ -156,24 +156,21 @@ const userController = {
     }
   },
 
-  async setNewPassword(req, res) {
+  async setNewPassword(req,res) {
     try {
-      const { email } = req.body;
+      const email = req.user.email;
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const result = await client.query(
         'UPDATE "user" SET password = $2 WHERE email = $1',
         [email, hashedPassword]
       );
-
-      if (result.rowCount === 1) {
-        return res
-          .status(200)
-          .json({ message: "Votre mot de passe a bien été modifié." });
+debug(req.user)
+      if(!result) {
+        return res.status(404).json({
+          status: "Votre mot de passe n'a pas pu être modifié.",
+        });
       }
-
-      res
-        .status(304)
-        .json({ message: "Votre mot de passe n'a pas pu être modifié." });
+      return res.json(result) 
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

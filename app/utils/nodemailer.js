@@ -23,7 +23,7 @@ const resetPasswordEmail =  (email, token) => {
     to: email,
     subject: "Réinitialisez votre mot de passe",
     html: `<p>Bonjour,</p>
-           <p>Une demande de réinitialisation de mot de passe a été générée.<br />
+           <p>Une demande de réinitialisation de mot de passe a été générée pour l'adresse ${email}.<br />
               Si celle-ci ne provient pas de vous merci de ne pas tenir compte de cet email.</p>
            <p>Sinon, voici un lien vous permettant de réinitiliser votre mot de passe :
            <a href='${process.env.URL}/nouveau-mot-de-passe?${token}'>Réinitisaliser mon mot de passe.</a></p>

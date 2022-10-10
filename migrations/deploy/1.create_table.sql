@@ -5,7 +5,7 @@ BEGIN;
 CREATE DOMAIN mail AS TEXT
     CHECK( VALUE ~ '^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$' );
 
-CREATE DOMAIN zip AS TEXT CHECK(   VALUE ~ '^[0-9]{5}$' );
+CREATE DOMAIN zip AS TEXT CHECK (VALUE ~ '^([0-9]{5})?$');
 
 
 CREATE TABLE IF NOT EXISTS role(

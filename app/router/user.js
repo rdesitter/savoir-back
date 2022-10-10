@@ -10,7 +10,7 @@ router.post("/api/login", userController.login);
 
 router.delete("/api/user/:id", authenticateToken, userController.delete);
 
-router.post("/api/resetpassword",authenticateToken, userController.resetPassword);
+router.post("/api/resetpassword", userController.resetPassword);
 router.post("/api/contact",authenticateToken, userController.contactForm);
 
 router.patch("/api/newpassword", userController.setNewPassword);

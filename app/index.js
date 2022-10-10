@@ -15,7 +15,7 @@ app.use(cors(corsOptions));
 app.use(routerIndex);
 
 app.use('/apidoc', express.static('apidoc'));
-app.use(authorizationError);
+// app.use(authorizationError);
 
 
 module.exports = app;

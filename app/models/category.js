@@ -15,6 +15,11 @@ const categoryDataMapper = {
           FROM category
         `
       );
+
+      if (result.rowCount === 0) {
+        throw new Error("Il n'y a pas de categorie");
+
+      }
       return result.rows;
     } catch (err) {
       debug(err);
@@ -35,6 +40,9 @@ const categoryDataMapper = {
       const result = await client.query("DELETE FROM category WHERE id = $1", [
         id,
       ]);
+      if (result.rowCount === 0) {
+        throw new Error("La catégorie n'a pas pu être supprimée");
+      }
       return result.rows;
     } catch (err) {
       debug(err);

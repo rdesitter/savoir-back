@@ -1,7 +1,7 @@
 const express = require("express");
 const adController = require("../controller/api/adController");
 const router = express.Router();
-
+const { authenticateToken } = require("../utils/jwt-helpers");
 /**
  * @api {get} /api/annonces All
  * @apiName GetAll
@@ -175,7 +175,35 @@ router.get("/api/annonces/type/:type_id",adController.getAllByType) /* ajout /ty
  *    }
  */
 router.get("/api/annonces/:id",adController.getOneWithSimilar)
-
+/**
+ * @api {get} /api/annonces/category/:category_id/type/:type_id Get ad by category and type
+ * @apiName getAllByCategoryAndType
+ * @apiGroup Ad
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {Number} id Ad unique identifier
+ * 
+ * @apiSuccess {Object} returns ad
+ * @apiSuccessExample Succes-Response:
+ *    {
+ *      "id": "mettre un exemple",
+ *    }
+ */
+router.get("/api/annonces/category/:category_id/type/:type_id", adController.getAllByTypeAndCategory)
+/**
+ * @api {get} /api/users/annonces/:user_id Get ad by user_id
+ * @apiName getUserAds
+ * @apiGroup Ad
+ * @apiVersion 1.0.0
+ * 
+ * @apiParam {Number} id Ad unique identifier
+ * 
+ * @apiSuccess {Object} returns ad
+ * @apiSuccessExample Succes-Response:
+ *    {
+ *      "id": "mettre un exemple",
+ *    }
+ */
 router.get("/api/users/annonces/:user_id", adController.getUserAds)
 /**
  * @api {post} /api/users/create-annonces Create
@@ -189,7 +217,7 @@ router.get("/api/users/annonces/:user_id", adController.getUserAds)
         "id": "mettre un exemple"
       },
  */
-router.post("/api/users/create-annonces",adController.createUserAd);
+router.post("/api/users/create-annonces",authenticateToken,adController.createUserAd);
 /**
  * @api {patch} /api/annonces/:id Update
  * @apiName Edit
@@ -200,7 +228,7 @@ router.post("/api/users/create-annonces",adController.createUserAd);
  * 
  * @apiSuccess {Object} returns update ad
  */
-router.patch("/api/annonces/:id",adController.edit)
+router.patch("/api/annonces/:id",authenticateToken,adController.edit)
  /**
  * @api {delete} /api/annonces/:id Delete
  * @apiName Delete
@@ -215,7 +243,7 @@ router.patch("/api/annonces/:id",adController.edit)
         "id": "mettre un exemple"
       },
  */
-router.delete("/api/annonces/:id",adController.delete)
+router.delete("/api/annonces/:id",authenticateToken,adController.delete)
 
 
 

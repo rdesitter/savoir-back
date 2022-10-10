@@ -9,9 +9,19 @@ const adDataMapper = {
     try {
       const result = await client.query(
         `
-          SELECT * FROM ad
+          SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+          category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+          condition.id AS condition_id, condition.name AS condition_name,
+          type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+          FROM ad
+          JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
         `
       );
+
+      if(result.rowCount === 0){
+        throw new Error("Il n'y a aucune annonce.")
+
+      }
       return result.rows;
     } catch (err) {
       debug(err);
@@ -27,16 +37,20 @@ const adDataMapper = {
       const result = await client.query(
         // todo: quelle sont les infos importantes pour le front ?
         `
-          SELECT * FROM ad
+          SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+          category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+          condition.id AS condition_id, condition.name AS condition_name,
+          type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+          FROM ad
+          JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
           WHERE category_id = $1
         `,
         [category_id]
       );
       if (result.rowCount === 0) {
-        return {
-          status : 500,
-          message: "Aucune annonce trouvée",
-        }
+
+        throw new Error("Nous n'avons trouvé aucune annonce pour cette categorie.")
+
       }
       return result.rows;
     } catch (err) {
@@ -53,11 +67,23 @@ const adDataMapper = {
       const result = await client.query(
         // todo: quelle sont les infos importantes pour le front ?
         `
-          SELECT * FROM ad
+          SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+          category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+          condition.id AS condition_id, condition.name AS condition_name,
+          type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+          FROM ad 
+          JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id
           WHERE user_id = $1;
         `,
         [user_id]
       );
+      if (result.rowCount === 0) {
+
+        throw new Error(
+          "Nous n'avons trouvé annonce pour cet·te utilisateur·ice"
+        );
+      }
+
       return result.rows;
     } catch (err) {
       debug(err);
@@ -70,9 +96,20 @@ const adDataMapper = {
    */
   async getAllByType(id) {
     try {
-      const result = await client.query("SELECT * FROM ad WHERE type_id = $1", [
-        id,
-      ]);
+      const result = await client.query(
+        `SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+        category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+        condition.id AS condition_id, condition.name AS condition_name,
+        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+        FROM ad 
+        JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id WHERE type_id = $1`,
+        [id]
+      );
+      if (result.rowCount === 0) {
+
+        throw new Error("Nous n'avons trouvé aucune annonce pour ce type.");
+      }
+
       return result.rows;
     } catch (err) {
       debug(err);
@@ -85,26 +122,86 @@ const adDataMapper = {
    */
   async getOneWithSimilar(id) {
     try {
-      const resultAd = await await client.query(
-        "SELECT * FROM ad WHERE id = $1",
+      const resultAd = await client.query(
+        `
+      SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+      category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+      condition.id AS condition_id, condition.name AS condition_name,
+      type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, "user".email AS user_email, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+      FROM ad 
+      JOIN "user" ON "user".id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id JOIN picture ON picture.id = "user".picture_id 
+      WHERE ad.id = $1`,
         [id]
       );
+      // SELECT (Le même style de champs de adsOfUser) FROM ad JOIN "user" ON user.id = ad.user_id JOIN category ON category.id = ad.category_id JOIN condition ON condition.id = ad.condition_id JOIN type ON type.id = ad.type_id WHERE id = $1
+      //console.log(resultAd.rowCount);
+      if (resultAd.rowCount === 0) {
+
+        throw new Error("Nous n'avons trouvé aucune annonce.");
+      }
+
+        
+
       const category = resultAd.rows[0].category_id;
       const resultWithoutID = await client.query(
         `
-          SELECT * FROM ad
-          WHERE id != $1
-          ORDER BY created_at DESC
+        SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+        category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+        condition.id AS condition_id, condition.name AS condition_name,
+        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+        FROM ad 
+        JOIN "user" ON "user".id = ad.user_id 
+        JOIN category ON category.id = ad.category_id 
+        JOIN condition ON condition.id = ad.condition_id 
+        JOIN type ON type.id = ad.type_id 
+        JOIN picture ON picture.id = "user".picture_id
+        WHERE ad.id != $1
+        ORDER BY created_at DESC
         `,
         [id]
       );
+
       let sameCategory = resultWithoutID.rows.filter(
         (sameCategory) => sameCategory.category_id === category
       );
+
+      if (resultWithoutID.rowCount === 0) {
+        throw new Error("Il n'y a pas d'annonces similaires");
+      }
+
       return {
         post: resultAd.rows[0],
         similarPosts: sameCategory.slice(0, 5),
       };
+    } catch (err) {
+      debug(err);
+    }
+  },
+
+  async getAllByTypeAndCategory(type_id, category_id) {
+    try {
+      const result = await client.query(
+        `SELECT ad.id, ad.title, ad.postal_code, ad.image, ad.description, ad.created_at, ad.updated_at,
+        category.id AS category_id, category.name AS category_name, category.slug AS category_slug,
+        condition.id AS condition_id, condition.name AS condition_name,
+        type.id AS type_id, type.name AS type_name, "user".id AS user_id, "user".pseudo AS user_name, "user".pronoun AS gender, picture.id AS picture_id, picture.name AS picture_name, picture.slug AS picture_slug 
+        FROM ad 
+        JOIN "user" ON "user".id = ad.user_id 
+        JOIN category ON category.id = ad.category_id 
+        JOIN condition ON condition.id = ad.condition_id 
+        JOIN type ON type.id = ad.type_id 
+        JOIN picture ON picture.id = "user".picture_id 
+        WHERE type_id = $1 AND category_id = $2`,
+        [type_id, category_id]
+      );
+      if (result.rowCount === 0) {
+
+        
+        throw new Error ("Nous n'avons trouvé aucune annonce qui correspond à ce type et cette categorie.")
+        
+      } 
+
+      return result.rows;
     } catch (err) {
       debug(err);
     }
@@ -117,6 +214,14 @@ const adDataMapper = {
   async delete(id) {
     try {
       const result = await client.query("DELETE FROM ad WHERE id = $1", [id]);
+      debug(result);
+      if (result.rowCount === 0) {
+
+       
+        throw new Error ("L'annonce n'a pas pu être supprimée.")
+       
+      } 
+    
       return result.rows;
     } catch (err) {
       debug(err);
@@ -153,7 +258,17 @@ const adDataMapper = {
           `,
         [...values]
       );
-      return result.rows;
+
+      if (result.rowCount === 0) {
+
+        
+        throw new Error ("L'annonce n'a pas pu être crée")
+        
+      } 
+      
+
+
+      return result.rows[0];
     } catch (err) {
       debug(err);
     }
@@ -181,7 +296,13 @@ const adDataMapper = {
           `,
         [...values, id]
       );
-      debug(savedAd);
+      if (savedAd.rowCount === 0) {
+
+        
+        throw new Error ("L'annonce n'a pas pu être modifiée.")
+       
+      } 
+
       return { modification: savedAd.rows[0], message: "annonce modifiée" };
     } catch (err) {
       debug(err);

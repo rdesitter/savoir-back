@@ -5,6 +5,10 @@ const userDataMapper = {
   async getAllUsers() {
     try {
       const users = await client.query('SELECT * FROM "user"');
+      if (users.rowCount === 0) {
+        throw new Error("Il n'a aucun·e utilisateur·ice");
+      }
+
       return {
         users: users.rows,
       };
@@ -40,7 +44,9 @@ const userDataMapper = {
           `,
         [id]
       );
-
+      if (resultUser.rowCount === 0) {
+        throw new Error("Nous n'avons trouvé aucun profil d'utilisateur·ice.");
+      }
       return {
         user: resultUser.rows[0],
         adsOfUser: adsOfUser.rows,
@@ -51,24 +57,36 @@ const userDataMapper = {
   },
 
   async edit(id, user) {
-    const fields = Object.keys(user).map(
-      (prop, index) => `"${prop}" = $${index + 1}`
-    );
-    debug(fields);
-    const values = Object.values(user);
-    debug(values);
+   try{
 
-    const savedUser = await client.query(
-      `
-                UPDATE "user" SET
-                    ${fields}
-                WHERE id = $${fields.length + 1}
-                RETURNING *
-            `,
-      [...values, id]
-    );
+     const fields = Object.keys(user).map(
+       (prop, index) => `"${prop}" = $${index + 1}`
+     );
+     debug(fields);
+     const values = Object.values(user);
+     debug(values);
 
-    return savedUser.rows[0];
+
+     const savedUser = await client.query(
+       `
+                 UPDATE "user" SET
+                     ${fields}
+                 WHERE id = $${fields.length + 1}
+                 RETURNING *
+             `,
+       [...values, id]
+     );
+      if (savedUser.rowCount === 0) {
+     throw new Error("L'utilisateur·ice n'a pas pu être modifié·e");
+      }
+     return {
+       user: savedUser.rows[0],
+     };
+   }catch(error){
+    debug(error)
+   }
+    
+
   },
 
   async delete(id) {
@@ -76,7 +94,23 @@ const userDataMapper = {
       const result = await client.query('DELETE FROM "user" WHERE id = $1', [
         id,
       ]);
-      return result.rows;
+      if (result.rowCount === 0) {
+        throw new Error("L'utilisateur·ice n'a pas pu être supprimé·e");
+      }
+      return {message : "L'utilisateur·ice a bien été supprimé·e"};
+    } catch (err) {
+      debug(err);
+    }
+  },
+
+  async getAllAvatars() {
+    try {
+      const results = await client.query("SELECT * FROM picture");
+      //console.log(results);
+      if (results.rowCount === 0) {
+        throw new Error("No avatars");
+      }
+      return results.rows;
     } catch (err) {
       debug(err);
     }

@@ -217,6 +217,7 @@ debug(req.user)
             status:
               "Désolé test le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
           });
+          console.log(error)
         } else {
           res.json({
             status:

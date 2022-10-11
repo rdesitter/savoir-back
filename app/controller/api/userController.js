@@ -27,7 +27,7 @@ const userController = {
         [email]
       );
 
-      //console.log(user);
+      ;
 
       if (user.rows.length === 0) {
         return res.status(401).json({ error: "L'email est incorrect" });
@@ -137,19 +137,22 @@ const userController = {
       contactEmail.sendMail(
         resetPasswordEmail(email, newTokens.accessToken),
         (error) => {
+          console.log('reset',error)
           if (error) {
             res.json({
               status:
-                "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
+                "Désolé test le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
             });
+            
           } else {
             res.json({
               status:
-                "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé.",
+              "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé.",
             });
           }
         }
-      );
+        );
+        debug(error)
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

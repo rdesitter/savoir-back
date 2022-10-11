@@ -6,7 +6,6 @@ const xoauth2 = require('xoauth2')
 //https://accounts.google.com/DisplayUnlockCaptcha
 const contactEmail = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
-    host: 'smtp.gmail.com',
     port: 465,
     secure: true,
     auth: {

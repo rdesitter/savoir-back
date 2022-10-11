@@ -163,6 +163,7 @@ const adController = {
    * @returns Route API JSON response
    */
   async delete(req, res) {
+    // verifier req.user , token décodé
     try {
       const deleteAd = await adDataMapper.delete(req.params.id);
       if (!deleteAd) {

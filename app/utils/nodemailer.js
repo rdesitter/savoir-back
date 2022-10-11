@@ -1,13 +1,15 @@
 const nodemailer = require("nodemailer");
 const debug = require('debug')('app:Debug');
+const smtpTransport = require('nodemailer-smtp-transport');
 
-const contactEmail = nodemailer.createTransport({
+const contactEmail = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
     auth: {
     user: process.env.GMAIL_ADRESS,
     pass: process.env.GMAIL_PASSWORD,
     },
-});
+}));
 
 contactEmail.verify((error) => {
     if (error) {

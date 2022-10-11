@@ -133,16 +133,24 @@ const userController = {
           status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
 
-      //let newTokens = generateAccessToken(user.rows[0]);
+      let newTokens = generateAccessToken(user.rows[0]);
 
-      contactEmail.sendMail(mailOptions, function(err,res){
-        if(err){
-          console.log(err)
-        }else{
-          console.log('Email sent')
+      contactEmail.sendMail(
+        mailOptions(email, newTokens.accessToken),
+        (error) => {
+          if (error) {
+            res.json({
+              status:
+                "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
+            });
+          } else {
+            res.json({
+              status:
+                "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé.",
+            });
+          }
         }
-      });
-        debug(error)
+      );
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

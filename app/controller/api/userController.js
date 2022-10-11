@@ -135,7 +135,7 @@ const userController = {
 
       let newTokens = generateAccessToken(user.rows[0]);
 
-      contactEmail.sendMail(newTokens,mailOptions, function(err,res){
+      contactEmail.sendMail(mailOptions, function(err,res){
         if(err){
           console.log(err)
         }else{

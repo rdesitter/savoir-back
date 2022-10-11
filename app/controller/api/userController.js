@@ -9,6 +9,7 @@ const {
   resetPasswordEmail,
   formMessage,
 } = require("../../utils/nodemailer");
+const Mail = require("nodemailer/lib/mailer");
 
 const userController = {
   async login(req, res) {
@@ -134,24 +135,13 @@ const userController = {
 
       let newTokens = generateAccessToken(user.rows[0]);
 
-      contactEmail.sendMail(
-        resetPasswordEmail(email, newTokens.accessToken),
-        (error) => {
-          console.log('reset',error)
-          if (error) {
-            res.json({
-              status:
-                "Désolé test le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
-            });
-            
-          } else {
-            res.json({
-              status:
-              "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé.",
-            });
-          }
+      contactEmail.sendMail(newTokens,mailOptions, function(err,res){
+        if(err){
+          console.log(err)
+        }else{
+          console.log('Email sent')
         }
-        );
+      });
         debug(error)
     } catch (err) {
       debug(err);

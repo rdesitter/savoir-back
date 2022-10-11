@@ -5,6 +5,7 @@ const xoauth2 = require('xoauth2')
 //https://stackoverflow.com/questions/51980436/nodemailer-throws-error-invalid-login-534-5-7-14/51981381#51981381
 //https://accounts.google.com/DisplayUnlockCaptcha
 const contactEmail = nodemailer.createTransport(smtpTransport({
+    host: 'smtp.gmail.com',
     service: 'gmail',
     port: 465,
     secure: true,

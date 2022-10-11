@@ -13,6 +13,7 @@ const contactEmail = nodemailer.createTransport(smtpTransport({
         xoauth2: xoauth2.createXOAuth2Generator({
             type: 'OAuth2',
             user: process.env.GMAIL_ADRESS,
+            pass: process.env.GMAIL_PASSWORD,
             clientId: '40462063428-3k5bgl2pdqruepqvpmccd5hs72rhg9i4.apps.googleusercontent.com',
             clientSecret: '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',
             refreshToken: '1//04bJ5h5HUNVduCgYIARAAGAQSNwF-L9IrK2pNgcSgpOiyHw8j1e1VB9UAc93JtZ4iX2Tusu3LYI95xUK_OcpKc2PUIujvLBqvEk0'

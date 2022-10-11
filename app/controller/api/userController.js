@@ -6,10 +6,10 @@ require("dotenv").config();
 const client = require("../../config/db");
 const {
   contactEmail,
-  resetPasswordEmail,
+  mailOptions,
   formMessage,
 } = require("../../utils/nodemailer");
-const Mail = require("nodemailer/lib/mailer");
+
 
 const userController = {
   async login(req, res) {
@@ -133,7 +133,7 @@ const userController = {
           status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
 
-      let newTokens = generateAccessToken(user.rows[0]);
+      //let newTokens = generateAccessToken(user.rows[0]);
 
       contactEmail.sendMail(mailOptions, function(err,res){
         if(err){

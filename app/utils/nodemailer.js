@@ -1,16 +1,19 @@
 const nodemailer = require("nodemailer");
 const debug = require('debug')('app:Debug');
 const smtpTransport = require('nodemailer-smtp-transport');
-
-const contactEmail = nodemailer.createTransport(smtpTransport({
+//https://stackoverflow.com/questions/51980436/nodemailer-throws-error-invalid-login-534-5-7-14/51981381#51981381
+//https://accounts.google.com/DisplayUnlockCaptcha
+const contactEmail = nodemailer.createTransport({
     service: 'gmail',
-    secure: true,
+    port: 587,
+    ignoreTLS: false,
+    secure: false,
     host: 'smtp.gmail.com',
     auth: {
     user: process.env.GMAIL_ADRESS,
     pass: process.env.GMAIL_PASSWORD,
     },
-}));
+});
 
 contactEmail.verify((error) => {
     if (error) {

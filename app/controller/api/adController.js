@@ -1,4 +1,5 @@
 const adDataMapper = require("../../models/ad");
+const userDataMapper = require("../../models/user")
 const debug = require("debug")("app:Debug");
 const adController = {
   /**
@@ -86,14 +87,26 @@ const adController = {
    */
   async createUserAd(req, res) {
     try {
+      const user = await userDataMapper.getUserProfil(req.body.user_id)
       const userAd = await adDataMapper.createUserAd(req.body);
       if (!userAd){
         return res.status(404).json({
           status: "L'annonce n'a pas pu être crée",
         })
+      } else if (user.email !== req.user.email) {
+        return res.status(404).json({
+          status: "Vous n'êtes pas autorisé.e",
+        })
       }
-      debug(userAd)
-      return res.json(userAd);
+     
+        return res.json(userAd);
+      
+      
+        
+
+      
+      
+      
 
     } catch (err) {
       debug(err);

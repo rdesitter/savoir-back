@@ -9,6 +9,7 @@ INSERT INTO "role"(name) VALUES
 ('User');
 
 INSERT INTO "picture" (name, slug) VALUES 
+('NULL', 'null'),
 ('BEARD1', 'beard-1'),
 ('BEARD2', 'beard-2'),
 ('BEARD3', 'beard-3'),
@@ -21,7 +22,6 @@ INSERT INTO "picture" (name, slug) VALUES
 ('nohair1', 'nohair-1'),
 ('NOHAIR2', 'nohair-2'),
 ('NOHAIR3', 'nohair-3'),
-('NULL', 'null'),
 ('RAD1', 'rad-1'),
 ('RAD2', 'rad-2'),
 ('RAD3', 'rad-3'),

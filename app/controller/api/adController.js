@@ -130,7 +130,7 @@ const adController = {
   async getOneWithSimilar(req, res) {
     try {
       const ad = await adDataMapper.getOneWithSimilar(req.params.id);
-      console.log(ad)
+      
       if (!ad) {
         return res.status(500).json({message: "Nous n'avons trouvé aucune annonce."});
       }
@@ -163,6 +163,7 @@ const adController = {
    * @returns Route API JSON response
    */
   async delete(req, res) {
+    // verifier req.user , token décodé
     try {
       const deleteAd = await adDataMapper.delete(req.params.id);
       if (!deleteAd) {

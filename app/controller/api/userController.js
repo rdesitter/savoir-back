@@ -6,9 +6,10 @@ require("dotenv").config();
 const client = require("../../config/db");
 const {
   contactEmail,
-  resetPasswordEmail,
+  mailOptions,
   formMessage,
 } = require("../../utils/nodemailer");
+
 
 const userController = {
   async login(req, res) {
@@ -27,7 +28,7 @@ const userController = {
         [email]
       );
 
-      //console.log(user);
+      ;
 
       if (user.rows.length === 0) {
         return res.status(401).json({ error: "L'email est incorrect" });
@@ -135,7 +136,7 @@ const userController = {
       let newTokens = generateAccessToken(user.rows[0]);
 
       contactEmail.sendMail(
-        resetPasswordEmail(email, newTokens.accessToken),
+        mailOptions(email, newTokens.accessToken),
         (error) => {
           if (error) {
             res.json({
@@ -215,8 +216,9 @@ debug(req.user)
         if (error) {
           res.json({
             status:
-              "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
+              "Désolé test le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
           });
+          console.log(error)
         } else {
           res.json({
             status:
@@ -224,6 +226,7 @@ debug(req.user)
           });
         }
       });
+      
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

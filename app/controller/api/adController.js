@@ -1,5 +1,8 @@
 const adDataMapper = require("../../models/ad");
 const debug = require("debug")("app:Debug");
+const client = require("../../config/db");
+const { json } = require("express");
+
 const adController = {
   /**
    * Ad controller to get all ads
@@ -163,15 +166,27 @@ const adController = {
    * @returns Route API JSON response
    */
   async delete(req, res) {
-    // verifier req.user , token décodé
     try {
-      const deleteAd = await adDataMapper.delete(req.params.id);
-      if (!deleteAd) {
-        return res.status(404).json({
-          status: "L'annonce n'a pas pu être supprimé",
-        });
+      const result = await client.query(
+        `
+          SELECT ad.id FROM ad WHERE user_id = $1;
+        `,
+        [req.user.id]
+      );
+
+      const found = result.rows.find(ad => ad.id === Number(req.params.id))
+
+      if (found) { 
+        const deleteAd = await adDataMapper.delete(req.params.id);
+        if (!deleteAd) {
+          return res.status(404).json({
+            status: "L'annonce n'a pas pu être supprimé",
+          });
+        }
+        return res.json(deleteAd);
       }
-      return res.json(deleteAd);
+
+      res.status(401).json({message: "Vous n'êtes pas autorisé à supprimer l'annonce."})
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

@@ -2,7 +2,6 @@ const adDataMapper = require("../../models/ad");
 const userDataMapper = require("../../models/user")
 const debug = require("debug")("app:Debug");
 const client = require("../../config/db");
-const { json } = require("express");
 
 const adController = {
   /**

@@ -1,5 +1,5 @@
 const adDataMapper = require("../../models/ad");
-const userDataMapper = require("../../models/user");
+const userDataMapper = require("../../models/user")
 const debug = require("debug")("app:Debug");
 const client = require("../../config/db");
 
@@ -93,12 +93,15 @@ const adController = {
    */
    async createUserAd(req, res) {
     try {
-      const user = await userDataMapper.getUserProfil(req.body.user_id);
+
+      const user = await userDataMapper.getUserProfil(req.body.user_id)
+
       const userAd = await adDataMapper.createUserAd(req.body);
 
       if (!userAd) {
         return res.status(404).json({
           status: "L'annonce n'a pas pu être crée",
+
         });
       } else if (user.user.email !== req.user.email) {
         return res.status(404).json({
@@ -106,6 +109,7 @@ const adController = {
         });
       }
       return res.json(userAd);
+
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

@@ -171,35 +171,22 @@ const userController = {
   },
 
   async setNewPassword(req,res) {
-    debug(req.user);
     try {
+      const email = req.user.email;
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const result = await client.query(
-        `
-          SELECT "user".id FROM "user" WHERE "user".id = $1
-        `,
-        [req.user.id]
-      )
-
-      const found = result.rows.find(user => user.id === Number(req.params.id));
-      debug(found);
-      if (found) {
-        const email = req.user.email;
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const result = await client.query(
-          'UPDATE "user" SET password = $2 WHERE email = $1',
-          [email, hashedPassword]
-        );
+        'UPDATE "user" SET password = $2 WHERE email = $1',
+        [email, hashedPassword]
+      );
 
       if(!result) {
         return res.status(404).json({
           status: "Votre mot de passe n'a pas pu être modifié.",
         });
       }
-      return res.json(result)
-    }
-    res.status(401).json({message: "Vous n'êtes pas autorisé à supprimer l'annonce."})
+      return res.json(result) 
     } catch (err) {
-      debug(err);
+      
       res.status(500).json(err.toString());
     }
   },

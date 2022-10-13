@@ -1,7 +1,8 @@
 const adDataMapper = require("../../models/ad");
+const userDataMapper = require("../../models/user");
 const debug = require("debug")("app:Debug");
 const client = require("../../config/db");
-const { json } = require("express");
+
 
 const adController = {
   /**
@@ -13,10 +14,10 @@ const adController = {
   async getAll(_, res) {
     try {
       const ads = await adDataMapper.getAll();
-      if (!ads){
+      if (!ads) {
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce.",
-        })
+        });
       }
       return res.json(ads);
     } catch (err) {
@@ -32,14 +33,16 @@ const adController = {
    */
   async getAllByCategory(req, res) {
     try {
-      const adsByCategory = await adDataMapper.getAllByCategory(req.params.category_id);
-      debug(adsByCategory)
-      if (!adsByCategory){
+      const adsByCategory = await adDataMapper.getAllByCategory(
+        req.params.category_id
+      );
+      debug(adsByCategory);
+      if (!adsByCategory) {
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce pour cette catégorie.",
-        })
+        });
       }
-        return res.json(adsByCategory);
+      return res.json(adsByCategory);
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -54,13 +57,13 @@ const adController = {
   async getAllByUser(req, res) {
     try {
       const adsByUser = await adDataMapper.getAllByUser(req.params.user_id);
-      if (!adsByUser){
+      if (!adsByUser) {
         return res.status(404).json({
-          status: "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
-        })
+          status:
+            "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
+        });
       }
       return res.json(adsByUser);
-      
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -70,10 +73,11 @@ const adController = {
   async getUserAds(req, res) {
     try {
       const userAds = await adDataMapper.getAllByUser(req.params.user_id);
-      if (!userAds){
+      if (!userAds) {
         return res.status(404).json({
-          status: "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
-        })
+          status:
+            "Nous n'avons trouvé aucune annonce pour cet·te utilisateur·ice.",
+        });
       }
       return res.json(userAds);
     } catch (err) {
@@ -87,17 +91,21 @@ const adController = {
    * @param {*} res Express response object
    * @returns Route API JSON response
    */
-  async createUserAd(req, res) {
+   async createUserAd(req, res) {
     try {
+      const user = await userDataMapper.getUserProfil(req.body.user_id);
       const userAd = await adDataMapper.createUserAd(req.body);
-      if (!userAd){
+
+      if (!userAd) {
         return res.status(404).json({
           status: "L'annonce n'a pas pu être crée",
-        })
+        });
+      } else if (user.user.email !== req.user.email) {
+        return res.status(404).json({
+          status: "Vous n'êtes pas autorisé.e",
+        });
       }
-      debug(userAd)
       return res.json(userAd);
-
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -112,13 +120,12 @@ const adController = {
   async getAllByType(req, res) {
     try {
       const adsByType = await adDataMapper.getAllByType(req.params.type_id);
-      if (!adsByType){
+      if (!adsByType) {
         return res.status(404).json({
           status: "Nous n'avons trouvé aucune annonce pour ce type.",
-        })
+        });
       }
       return res.json(adsByType);
-      
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -133,9 +140,11 @@ const adController = {
   async getOneWithSimilar(req, res) {
     try {
       const ad = await adDataMapper.getOneWithSimilar(req.params.id);
-      
+
       if (!ad) {
-        return res.status(500).json({message: "Nous n'avons trouvé aucune annonce."});
+        return res
+          .status(500)
+          .json({ message: "Nous n'avons trouvé aucune annonce." });
       }
       res.json(ad);
     } catch (err) {
@@ -146,11 +155,15 @@ const adController = {
 
   async getAllByTypeAndCategory(req, res) {
     try {
-      const adsByTypeAndCategory = await adDataMapper.getAllByTypeAndCategory(req.params.type_id, req.params.category_id);
-      if (!adsByTypeAndCategory){
+      const adsByTypeAndCategory = await adDataMapper.getAllByTypeAndCategory(
+        req.params.type_id,
+        req.params.category_id
+      );
+      if (!adsByTypeAndCategory) {
         return res.status(404).json({
-          status: "Nous n'avons trouvé aucune annonce pour ce type et cette catégorie.",
-        })
+          status:
+            "Nous n'avons trouvé aucune annonce pour ce type et cette catégorie.",
+        });
       }
       return res.json(adsByTypeAndCategory);
     } catch (err) {
@@ -174,9 +187,9 @@ const adController = {
         [req.user.id]
       );
 
-      const found = result.rows.find(ad => ad.id === Number(req.params.id))
+      const found = result.rows.find((ad) => ad.id === Number(req.params.id));
 
-      if (found) { 
+      if (found) {
         const deleteAd = await adDataMapper.delete(req.params.id);
         if (!deleteAd) {
           return res.status(404).json({
@@ -186,7 +199,9 @@ const adController = {
         return res.json(deleteAd);
       }
 
-      res.status(401).json({message: "Vous n'êtes pas autorisé à supprimer l'annonce."})
+      res
+        .status(401)
+        .json({ message: "Vous n'êtes pas autorisé à supprimer l'annonce." });
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -200,13 +215,26 @@ const adController = {
    */
   async edit(req, res) {
     try {
-      const savedAd = await adDataMapper.edit(req.params.id, req.body);
-      if (!savedAd) {
-        res
-          .status(404)
-          .json({ message: "Votre annonce n'a pas été modifié." });
+      const result = await client.query(
+        `
+          SELECT ad.id FROM ad WHERE user_id = $1;
+        `,
+        [req.user.id]
+      );
+      const found = result.rows.find((ad) => ad.id === Number(req.params.id));
+      if (found) {
+        const savedAd = await adDataMapper.edit(req.params.id, req.body);
+        if (!savedAd) {
+          res
+            .status(404)
+            .json({ message: "Votre annonce n'a pas été modifié." });
+        }
+
+        return res.json(savedAd);
       }
-      return res.json(savedAd);
+      res
+        .status(401)
+        .json({ message: "Vous n'êtes pas autorisé à modifier l'annonce." });
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

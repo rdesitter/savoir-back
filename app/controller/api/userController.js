@@ -171,20 +171,33 @@ const userController = {
   },
 
   async setNewPassword(req,res) {
+    debug(req.user);
     try {
-      const email = req.user.email;
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const result = await client.query(
-        'UPDATE "user" SET password = $2 WHERE email = $1',
-        [email, hashedPassword]
-      );
-debug(req.user)
+        `
+          SELECT "user".id FROM "user" WHERE "user".id = $1
+        `,
+        [req.user.id]
+      )
+
+      const found = result.rows.find(user => user.id === Number(req.params.id));
+      debug(found);
+      if (found) {
+        const email = req.user.email;
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const result = await client.query(
+          'UPDATE "user" SET password = $2 WHERE email = $1',
+          [email, hashedPassword]
+        );
+
       if(!result) {
         return res.status(404).json({
           status: "Votre mot de passe n'a pas pu être modifié.",
         });
       }
-      return res.json(result) 
+      return res.json(result)
+    }
+    res.status(401).json({message: "Vous n'êtes pas autorisé à supprimer l'annonce."})
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -207,16 +220,29 @@ debug(req.user)
   },
 
   async edit(req, res) {
+    debug(req.user);
     try {
-      const savedUser = await userDataMapper.edit(req.params.id, req.body);
+      const result = await client.query(
+        `
+          SELECT "user".id FROM "user" WHERE "user".id = $1
+        `,
+        [req.user.id]
+      )
 
-      if (!savedUser) {
-        res
-          .status(404)
-          .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
-      }
+     const found = result.rows.find(user => user.id === Number(req.params.id));
 
-      return res.json(savedUser);
+    if (found) {
+    const savedUser = await userDataMapper.edit(req.params.id, req.body);
+
+    if (!savedUser) {
+      res
+        .status(404)
+        .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
+    }
+
+    return res.json(savedUser);
+    }
+    res.status(401).json({message: "Vous n'êtes pas autorisé à modifier le profil de cet utilisateur·ice."})
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

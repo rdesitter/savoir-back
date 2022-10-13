@@ -106,7 +106,18 @@ const userController = {
   },
 
   async delete(req, res) {
+    debug(req.user);
     try {
+      const result = await client.query(
+        `
+          SELECT "user".id FROM "user" WHERE "user".id = $1
+        `,
+        [req.user.id]
+      )
+
+     const found = result.rows.find(user => user.id === Number(req.params.id));
+
+    if (found) {
       const deleteUser = await userDataMapper.delete(req.params.id);
       if (!deleteUser) {
         return res.status(404).json({
@@ -114,6 +125,8 @@ const userController = {
         });
       }
       return res.json(deleteUser);
+    }
+    res.status(401).json({message: "Vous n'êtes pas autorisé à supprimer cet utilisateur·ice."})
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

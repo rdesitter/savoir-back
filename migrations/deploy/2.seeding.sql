@@ -51,17 +51,17 @@ INSERT INTO "condition" (name) VALUES
 
 INSERT INTO "category" (name, slug, created_at, updated_at) VALUES
 ('Administration', 'administration', now(), now()),
-('Aide educative', 'aide-educative', now(), now()),
+('Aide éducative', 'aide-educative', now(), now()),
 ('Animaux', 'animaux', now(), now()),
-('Arts/travaux', 'arts-travaux', now(), now()),
-('Bien être', 'bien-etre', now(), now()),
+('Arts / travaux manuels', 'arts-travaux', now(), now()),
+('Bien-être', 'bien-etre', now(), now()),
 ('Cuisine', 'cuisine', now(), now()),
-('Decouverte métier', 'decouverte-metier', now(), now()),
+('Découverte métier', 'decouverte-metier', now(), now()),
 ('Informatique', 'informatique', now(), now()),
 ('Jardin', 'jardin', now(), now()),
 ('Langues', 'langues', now(), now()),
 ('Partage culturel', 'partage-culturel', now(), now()),
-('Reparation/bricolage', 'reparation-bricolage', now(), now()),
+('Réparation / bricolage', 'reparation-bricolage', now(), now()),
 ('Sport', 'sport', now(), now());
 
 INSERT INTO "ad" (title, postal_code, image, description, user_id, condition_id, type_id, category_id, created_at, updated_at) VALUES

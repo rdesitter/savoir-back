@@ -31,7 +31,7 @@ const userController = {
       ;
 
       if (user.rows.length === 0) {
-        return res.status(401).json({ error: "L'email est incorrect" });
+        return res.status(401).json({ error: "Email ou mot de passe incorrect." });
       }
 
       //check que le mot de passe du user est correct
@@ -42,7 +42,7 @@ const userController = {
       );
 
       if (!validPassword) {
-        return res.status(401).json("Mot de passe incorrect");
+        return res.status(401).json("Email ou mot de passe incorrect.");
       }
 
       let tokens = generateAccessToken(user.rows[0]);

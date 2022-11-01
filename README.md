@@ -1,12 +1,17 @@
 ### Project initialization
+
 <br/>
 
 We used npm package manager for this project
+
 ```bash
 npm install
 ```
-******
+
+---
+
 ### Git naming convention
+
 <br/>
 
 We are using [Gitmoji](https://gitmoji.dev/) + [conventional commits](https://www.conventionalcommits.org/)
@@ -39,8 +44,10 @@ We are using [Gitmoji](https://gitmoji.dev/) + [conventional commits](https://ww
 :construction: wip : commit name
 ```
 
-****
+---
+
 ### API Doc
+
 <br/>
 
 The documentation was created with [API doc](https://apidocjs.com/#param-api)  
@@ -53,4 +60,5 @@ apidoc -i app -o apidoc
 ```bash
 http://localhost:{PORT}/apidoc/
 ```
-***
+
+---

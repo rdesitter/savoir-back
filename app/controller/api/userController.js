@@ -6,9 +6,10 @@ require("dotenv").config();
 const client = require("../../config/db");
 const {
   contactEmail,
-  resetPasswordEmail,
+  mailOptions,
   formMessage,
 } = require("../../utils/nodemailer");
+
 
 const userController = {
   async login(req, res) {
@@ -27,10 +28,10 @@ const userController = {
         [email]
       );
 
-      //console.log(user);
+      ;
 
       if (user.rows.length === 0) {
-        return res.status(401).json({ error: "L'email est incorrect" });
+        return res.status(401).json({ error: "Email ou mot de passe incorrect." });
       }
 
       //check que le mot de passe du user est correct
@@ -41,7 +42,7 @@ const userController = {
       );
 
       if (!validPassword) {
-        return res.status(401).json("Mot de passe incorrect");
+        return res.status(401).json("Email ou mot de passe incorrect.");
       }
 
       let tokens = generateAccessToken(user.rows[0]);
@@ -105,7 +106,18 @@ const userController = {
   },
 
   async delete(req, res) {
+    debug(req.user);
     try {
+      const result = await client.query(
+        `
+          SELECT "user".id FROM "user" WHERE "user".id = $1
+        `,
+        [req.user.id]
+      )
+
+     const found = result.rows.find(user => user.id === Number(req.params.id));
+
+    if (found) {
       const deleteUser = await userDataMapper.delete(req.params.id);
       if (!deleteUser) {
         return res.status(404).json({
@@ -113,6 +125,8 @@ const userController = {
         });
       }
       return res.json(deleteUser);
+    }
+    res.status(401).json({message: "Vous n'êtes pas autorisé à supprimer cet utilisateur·ice."})
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -135,7 +149,7 @@ const userController = {
       let newTokens = generateAccessToken(user.rows[0]);
 
       contactEmail.sendMail(
-        resetPasswordEmail(email, newTokens.accessToken),
+        mailOptions(email, newTokens.accessToken),
         (error) => {
           if (error) {
             res.json({
@@ -156,26 +170,23 @@ const userController = {
     }
   },
 
-  async setNewPassword(req, res) {
+  async setNewPassword(req,res) {
     try {
-      const { email } = req.body;
+      const email = req.user.email;
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const result = await client.query(
         'UPDATE "user" SET password = $2 WHERE email = $1',
         [email, hashedPassword]
       );
 
-      if (result.rowCount === 1) {
-        return res
-          .status(200)
-          .json({ message: "Votre mot de passe a bien été modifié." });
+      if(!result) {
+        return res.status(404).json({
+          status: "Votre mot de passe n'a pas pu être modifié.",
+        });
       }
-
-      res
-        .status(304)
-        .json({ message: "Votre mot de passe n'a pas pu être modifié." });
+      return res.json(result) 
     } catch (err) {
-      debug(err);
+      
       res.status(500).json(err.toString());
     }
   },
@@ -196,16 +207,29 @@ const userController = {
   },
 
   async edit(req, res) {
+    debug(req.user);
     try {
-      const savedUser = await userDataMapper.edit(req.params.id, req.body);
+      const result = await client.query(
+        `
+          SELECT "user".id FROM "user" WHERE "user".id = $1
+        `,
+        [req.user.id]
+      )
 
-      if (!savedUser) {
-        res
-          .status(404)
-          .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
-      }
+     const found = result.rows.find(user => user.id === Number(req.params.id));
 
-      return res.json(savedUser);
+    if (found) {
+    const savedUser = await userDataMapper.edit(req.params.id, req.body);
+
+    if (!savedUser) {
+      res
+        .status(404)
+        .json({ message: "Votre utilisateur·ice n'a pas été modifié·e." });
+    }
+
+    return res.json(savedUser);
+    }
+    res.status(401).json({message: "Vous n'êtes pas autorisé à modifier le profil de cet utilisateur·ice."})
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());
@@ -218,8 +242,9 @@ const userController = {
         if (error) {
           res.json({
             status:
-              "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
+              "Désolé test le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
           });
+          console.log(error)
         } else {
           res.json({
             status:
@@ -227,6 +252,7 @@ const userController = {
           });
         }
       });
+      
     } catch (err) {
       debug(err);
       res.status(500).json(err.toString());

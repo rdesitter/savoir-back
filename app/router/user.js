@@ -11,11 +11,11 @@ router.post("/api/login", userController.login);
 router.delete("/api/user/:id", authenticateToken, userController.delete);
 
 router.post("/api/resetpassword", userController.resetPassword);
-router.post("/api/contact",authenticateToken, userController.contactForm);
+router.post("/api/contact", userController.contactForm);
 
-router.patch("/api/newpassword", userController.setNewPassword);
+router.patch("/api/newpassword",authenticateToken,userController.setNewPassword); //!
 
-router.patch("/api/user/:id", authenticateToken, userController.edit);
+router.patch("/api/user/:id", authenticateToken, userController.edit); //!
 
 router.get("/api/avatar", userController.getAllAvatars);
 

@@ -3,7 +3,9 @@ const debug = require('debug')('app:Debug');
 const smtpTransport = require('nodemailer-smtp-transport');
 const xoauth2 = require('xoauth2')
 //https://stackoverflow.com/questions/51980436/nodemailer-throws-error-invalid-login-534-5-7-14/51981381#51981381
-//https://accounts.google.com/DisplayUnlockCaptcha
+//https://accounts.google.com/DisplayUnlockCaptch
+//Refresh token if necessary :
+//https://stackoverflow.com/questions/24098461/nodemailer-gmail-what-exactly-is-a-refresh-token-and-how-do-i-get-one
 const contactEmail = nodemailer.createTransport(smtpTransport({
     host: 'smtp.gmail.com',
     service: 'gmail',
@@ -14,13 +16,10 @@ const contactEmail = nodemailer.createTransport(smtpTransport({
             type: 'OAuth2',
             user: process.env.GMAIL_ADRESS,
             pass: process.env.GMAIL_PASSWORD,
-            clientId: '40462063428-3k5bgl2pdqruepqvpmccd5hs72rhg9i4.apps.googleusercontent.com',
-            clientSecret: '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',
-            refreshToken: '1//04bJ5h5HUNVduCgYIARAAGAQSNwF-L9IrK2pNgcSgpOiyHw8j1e1VB9UAc93JtZ4iX2Tusu3LYI95xUK_OcpKc2PUIujvLBqvEk0'
-
+            clientId: process.env.NODEMAILER_CLIENTID,
+            clientSecret: process.env.NODEMAILER_CLIENTSECRET,
+            refreshToken: process.env.NODEMAILER_REFRESHTOKEN
         })
-        
-        
     },
 }));
 

@@ -136,14 +136,14 @@ const userController = {
   async resetPassword(req, res) {
     try {
       const { email } = req.body;
-
+      console.log(email);
       const user = await client.query('SELECT * FROM "user" WHERE email = $1', [
         email,
       ]);
-
-      if (!user)
+      console.log(user);
+      if (user.rowCount === 0)
         return res.status(404).json({
-          status: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
+          message: "Nous n'avons trouvé aucun·e utilisateur·ice avec cet email.",
         });
 
       let newTokens = generateAccessToken(user.rows[0]);
@@ -153,12 +153,12 @@ const userController = {
         (error) => {
           if (error) {
             res.json({
-              status:
+              message:
                 "Désolé le service est inactif pour le moment. Merci de ressayer dans quelques minutes.",
             });
           } else {
             res.json({
-              status:
+              message:
                 "Un email contenant les instructions pour réinitialiser votre mot de passe vous a été envoyé.",
             });
           }
